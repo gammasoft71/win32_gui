@@ -1,0 +1,11 @@
+#pragma once
+#include "application.h"
+#include "button.h"
+#include "control.h"
+#include "create_params.h"
+#include "debug.h"
+#include "event_handler.h"
+#include "form.h"
+#include "label.h"
+#include "string.h"
+#include "window_messages.h"
