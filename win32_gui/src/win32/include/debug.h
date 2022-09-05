@@ -1,5 +1,5 @@
 #pragma once
-#include <string>
+#include "string.h"
 #define TRACE /// @todo : Remove define...
 
 namespace win32 {

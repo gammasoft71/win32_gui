@@ -142,7 +142,7 @@ namespace win32 {
     /// @}
 
   private:
-    static LRESULT CALLBACK wnd_proc_dispatcher(HWND hwnd, UINT message, WPARAM wparam, LPARAM lparam);
+    static LRESULT CALLBACK wnd_proc_(HWND hwnd, UINT message, WPARAM wparam, LPARAM lparam);
     LRESULT wm_child_activate(const message& message);
     LRESULT wm_command(const message& message);
     LRESULT wm_ctlcolor(const message& message);

@@ -1,4 +1,5 @@
 #include "../include/debug.h"
+#include "../include/application.h"
 #include "../include/control.h"
 #include "../include/window_messages.h"
 
@@ -214,7 +215,7 @@ void control::create_handle() {
     data_->size.cx = cp.width;
   }
   data_->handle = CreateWindowEx(cp.ex_styles, cp.class_name, cp.text, cp.styles, cp.x, cp.y, cp.width, cp.height, cp.parent, nullptr, nullptr, nullptr);
-  data_->def_wnd_proc = reinterpret_cast<WNDPROC>(SetWindowLongPtr(data_->handle, GWLP_WNDPROC, reinterpret_cast<LONG_PTR>(wnd_proc_dispatcher)));
+  data_->def_wnd_proc = reinterpret_cast<WNDPROC>(SetWindowLongPtr(data_->handle, GWLP_WNDPROC, reinterpret_cast<LONG_PTR>(wnd_proc_)));
   controls_[data_->handle] = this;
   debug::write_line(string_format(L"%p - create handle", data_->handle));
   on_handle_created(event_args::empty);
@@ -355,7 +356,8 @@ void control::on_size_changed(const event_args& e) {
 }
 
 
-LRESULT CALLBACK control::wnd_proc_dispatcher(HWND hwnd, UINT message, WPARAM wparam, LPARAM lparam) {
+LRESULT CALLBACK control::wnd_proc_(HWND hwnd, UINT message, WPARAM wparam, LPARAM lparam) {
+  if (message == WM_ACTIVATEAPP) return application::wnd_proc({hwnd, message, wparam, lparam});
   auto control = from_handle(hwnd);
   if (control.has_value()) return control.value().get().wnd_proc({hwnd, message, wparam, lparam});
   return DefWindowProc(hwnd, message, wparam, lparam);
