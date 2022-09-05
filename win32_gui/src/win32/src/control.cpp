@@ -1,4 +1,6 @@
+#include "../include/debug.h"
 #include "../include/control.h"
+#include "../include/window_messages.h"
 
 using namespace win32;
 

@@ -1,5 +1,4 @@
 #pragma once
-#include <Windows.h>
 
 namespace win32 {
   class event_args {

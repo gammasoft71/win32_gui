@@ -1,14 +1,10 @@
 #pragma once
-#define TRACE /// @todo : Remove define...
-#include "debug.h"
-
 #include "bounds_specified.h"
 #include "create_params.h"
 #include "event_handler.h"
 #include "iwin32_window.h"
 #include "message.h"
 #include "string.h"
-#include "window_messages.h"
 #include <map>
 #include <optional>
 #include <Windowsx.h>

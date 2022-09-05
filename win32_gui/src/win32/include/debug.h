@@ -1,5 +1,6 @@
 #pragma once
-#include <Windows.h>
+#include <string>
+#define TRACE /// @todo : Remove define...
 
 namespace win32 {
   class debug {
@@ -7,12 +8,12 @@ namespace win32 {
     /// @name Methods
     /// @{
 
-    static void write(LPCWCHAR message) {
+    static void write(const std::wstring& message) {
 #if !defined(NDEBUG) || defined(DEBUG) || defined(TRACE)
       __write__(message);
 #endif
     }
-    static void write_line(LPCWCHAR message) {
+    static void write_line(const std::wstring& message) {
 #if !defined(NDEBUG) || defined(DEBUG) || defined(TRACE)
       __write__(message);
       __write__(L"\n");
@@ -21,7 +22,7 @@ namespace win32 {
     /// @}
 
   private:
-    static void __write__(LPCWCHAR message);
+    static void __write__(const std::wstring& message);
     debug() = delete;
   };
 }
