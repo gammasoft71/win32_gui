@@ -8,6 +8,10 @@ namespace win32 {
     virtual ~iwin32_window() = default;
     // @endcond
 
+    /// @name Properties
+    /// @{
+
     virtual HWND handle() const = 0;
+    /// @}
   };
 }

@@ -5,15 +5,22 @@
 namespace win32 {
   class label : public control {
   public:
+    /// @name Constructors
+    /// @{
+
     label() = default;
+    /// @}
 
   protected:
+    /// @name Protected Properties
+    /// @{
+
     struct create_params create_params() const noexcept override;
 
     SIZE default_size() const noexcept override;
+    /// @}
 
   private:
-
     struct data {
     };
     std::shared_ptr<data> data_ = std::make_shared<data>();

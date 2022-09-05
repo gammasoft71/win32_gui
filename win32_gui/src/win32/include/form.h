@@ -9,22 +9,42 @@ namespace win32 {
 
   class form : public control {
   public:
+    /// @name Constructors
+    /// @{
+
     form() = default;
+    /// @}
+
+    /// @name Properties
+    /// @{
 
     virtual void activate();
+    /// @}
+
+    /// @name Methods
+    /// @{
 
     void close();
 
     win32::dialog_result show_dialog(const win32::iwin32_window& control);
+    /// @}
 
   protected:
+    /// @name Protected Properties
+    /// @{
+
     win32::create_params create_params() const noexcept override;
 
     SIZE default_size() const noexcept override;
+    /// @}
+
+    /// @name Protected Methods
+    /// @{
 
     void end_dialog(win32::dialog_result result);
 
     LRESULT wnd_proc(const win32::message& message) override;
+    /// @}
 
   private:
     friend class win32::application;

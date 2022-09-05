@@ -4,6 +4,9 @@
 namespace win32 {
   class debug {
   public:
+    /// @name Methods
+    /// @{
+
     static void write(LPCWCHAR message) {
 #if !defined(NDEBUG) || defined(DEBUG) || defined(TRACE)
       __write__(message);
@@ -15,7 +18,7 @@ namespace win32 {
       __write__(L"\n");
 #endif
     }
-
+    /// @}
 
   private:
     static void __write__(LPCWCHAR message);

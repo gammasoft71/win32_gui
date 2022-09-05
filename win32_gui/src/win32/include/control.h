@@ -15,15 +15,27 @@
 #include <Uxtheme.h>
 
 namespace win32 {
+  /// @cond
   class control;
   using control_ref = std::reference_wrapper<control>;
+  /// @endcond
 
   class control : public iwin32_window {
   public:
-    control() = default;
-    ~control();
+    /// @name Constructors
+    /// @{
 
-    // Properties
+    control() = default;
+    control(const control&) = delete;
+    control(control&&) = delete;
+    /// @}
+
+    /// @cond
+    ~control();
+    /// @endcond
+
+    /// @name Properties
+    /// @{
 
     virtual COLORREF back_color() const noexcept;
     virtual control& back_color(COLORREF value);
@@ -64,8 +76,10 @@ namespace win32 {
 
     virtual int top() const noexcept;
     virtual control& top(int value);
+    /// @}
 
-    // Events
+    /// @name Events
+    /// @{
 
     event_handler click;
     event_handler back_color_changed;
@@ -73,17 +87,21 @@ namespace win32 {
     event_handler location_changed;
     event_handler size_changed;
     event_handler resize;
+    /// @}
 
-    // Methods
-
+    /// @name Methods
+    /// @{
+    
     static std::optional<control_ref> from_handle(HWND handle) noexcept;
 
     void hide();
     void show();
+    /// @}
 
   protected:
-    // Properties
 
+   /// @name Protected Properties
+   /// @{
     virtual struct create_params create_params() const noexcept;
 
     virtual COLORREF default_back_color() const;
@@ -91,8 +109,10 @@ namespace win32 {
     virtual COLORREF default_fore_color() const;
 
     virtual SIZE default_size() const noexcept;
+    /// @}
 
-    // Methods
+   /// @name Protected Methods
+   /// @{
 
     void create_handle();
 
@@ -123,10 +143,9 @@ namespace win32 {
     virtual void on_resize(const event_args& e);
 
     virtual void on_size_changed(const event_args& e);
+    /// @}
 
   private:
-    // Methods
-
     static LRESULT CALLBACK wnd_proc_dispatcher(HWND hwnd, UINT message, WPARAM wparam, LPARAM lparam);
     LRESULT wm_child_activate(const message& message);
     LRESULT wm_command(const message& message);
@@ -154,9 +173,7 @@ namespace win32 {
     LRESULT wm_show(const message& message);
     LRESULT wm_size(const message& message);
     LRESULT wm_sizing(const message& message);
-
-    // Members
-
+ 
     inline static std::map<HWND, control*> controls_;
     struct data {
       HBRUSH back_brush = nullptr;

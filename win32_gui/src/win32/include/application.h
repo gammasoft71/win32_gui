@@ -4,13 +4,17 @@ namespace win32 {
   class form;
   /// @endcond
 
-  class application {
+  class application /* static */ {
   public:
+    /// @name Methods
+    /// @{
+
     static void exit();
     static void exit(int exit_code);
 
     static void run();
     static void run(const win32::form& form);
+    /// @}
 
   private:
     application() = delete;

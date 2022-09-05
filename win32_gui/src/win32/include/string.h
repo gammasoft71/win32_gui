@@ -6,6 +6,9 @@
 #define __C_STRING_BUFFER_SIZE__ (4096)
 
 namespace win32 {
+  /// @name Methods
+  /// @{
+
 
   inline LPCWSTR string_format(LPCWSTR format, ...) {
     thread_local static WCHAR buffer[__C_STRING_BUFFER_SIZE__];
@@ -103,4 +106,5 @@ namespace win32 {
   /// @remarks For example, the name of the ustring type is ustring.
   inline std::wstring class_name(const std::type_info& info) { return get_class_name(full_class_name(info)); }
   */
+  /// @}
 }

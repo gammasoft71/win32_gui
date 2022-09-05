@@ -241,11 +241,11 @@ LRESULT control::reflect_message(HWND handle, const message& message) {
 }
 
 void control::set_bound_core(int x, int y, int width, int height, bounds_specified specified) {
-  if ((static_cast<int>(specified) & static_cast<int>(bounds_specified::x)) == static_cast<int>(bounds_specified::x) || (static_cast<int>(specified) & static_cast<int>(bounds_specified::y)) == static_cast<int>(bounds_specified::y)) {
+  if ((specified & bounds_specified::x) == bounds_specified::x || (specified & bounds_specified::y) == bounds_specified::y) {
     SetWindowPos(handle(), nullptr, left(), top(), this->width(), this->height(), SWP_NOSIZE);
     on_location_changed(event_args::empty);
   }
-  if ((static_cast<int>(specified) & static_cast<int>(bounds_specified::width)) == static_cast<int>(bounds_specified::width) || (static_cast<int>(specified) & static_cast<int>(bounds_specified::height)) == static_cast<int>(bounds_specified::height)) {
+  if ((specified & bounds_specified::width) == bounds_specified::width || (specified & bounds_specified::height) == bounds_specified::height) {
     SetWindowPos(handle(), nullptr, left(), top(), this->width(), this->height(), SWP_NOMOVE);
     on_size_changed(event_args::empty);
     on_resize(event_args::empty);
