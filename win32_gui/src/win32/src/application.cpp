@@ -59,8 +59,6 @@ LRESULT application::wm_activateapp(const message& message) {
   return 0;
 }
 LRESULT application::wm_processidle(const message& message) {
-  static auto cpt = 0;
-  debug::write_line(string_format(L"Idle %d... ", ++cpt));
   if (idle) idle(event_args::empty);
   return 0;
 }
