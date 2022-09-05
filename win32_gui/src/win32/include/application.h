@@ -33,7 +33,7 @@ namespace win32 {
     application() = delete;
     static LRESULT wnd_proc(const message& message);
     static LRESULT wm_activateapp(const message& message);
-    static LRESULT wm_processidle(const message& message);
+    static LRESULT wm_app_ilde(const message& message);
     static LRESULT wm_quit(const message& message);
   };
 }

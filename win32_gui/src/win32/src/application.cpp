@@ -31,7 +31,7 @@ void application::run() {
     } else {
       if (high_resolution_clock::now() - last_idle_time < 100ms) this_thread::sleep_for(2ms);
       else {
-        wnd_proc({ 0, WM_PROCESSIDLE, 0, 0 });
+        wnd_proc({ 0, wm_APPIDLE, 0, 0 });
         last_idle_time = high_resolution_clock::now();
       }
     }
@@ -47,7 +47,7 @@ void application::run(const form& form) {
 LRESULT application::wnd_proc(const message& message) {
   switch (message.msg) {
   case WM_ACTIVATEAPP: return wm_activateapp(message); break;
-  case WM_PROCESSIDLE: return wm_processidle(message); break;
+  case wm_APPIDLE: return wm_app_ilde(message); break;
   case WM_QUIT: return wm_quit(message); break;
   default: return 0; break;
   }
@@ -58,7 +58,8 @@ LRESULT application::wm_activateapp(const message& message) {
   debug::write_line(string_format(L"Activate application %s", message.wparam ? L"true" : L"false"));
   return 0;
 }
-LRESULT application::wm_processidle(const message& message) {
+
+LRESULT application::wm_app_ilde(const message& message) {
   if (idle) idle(event_args::empty);
   return 0;
 }
