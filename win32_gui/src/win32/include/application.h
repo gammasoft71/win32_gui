@@ -10,7 +10,7 @@ namespace win32 {
     static void exit(int exit_code);
 
     static void run();
-    static void run(const form& window);
+    static void run(const win32::form& form);
 
   private:
     application() = delete;

@@ -2,11 +2,11 @@
 
 using namespace win32;
 
-enum class dialog_result button::dialog_result() const noexcept {
+win32::dialog_result button::dialog_result() const noexcept {
   return data_->dialog_result;
 }
 
-void button::dialog_result(enum class dialog_result value) {
+void button::dialog_result(win32::dialog_result value) {
   data_->dialog_result = value;
 }
 

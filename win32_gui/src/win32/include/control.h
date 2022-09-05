@@ -21,7 +21,7 @@ namespace win32 {
   class control : public iwin32_window {
   public:
     control() = default;
-    virtual ~control();
+    ~control();
 
     // Properties
 

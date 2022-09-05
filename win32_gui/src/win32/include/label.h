@@ -5,6 +5,7 @@
 namespace win32 {
   class label : public control {
   public:
+    label() = default;
 
   protected:
     struct create_params create_params() const noexcept override;

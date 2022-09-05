@@ -3,34 +3,38 @@
 #include "dialog_result.h"
 
 namespace win32 {
+  /// @cond
   class application;
+  /// @endcond
 
   class form : public control {
   public:
+    form() = default;
+
     virtual void activate();
 
     void close();
 
-    dialog_result show_dialog(const iwin32_window& control);
+    win32::dialog_result show_dialog(const win32::iwin32_window& control);
 
   protected:
-    struct create_params create_params() const noexcept override;
+    win32::create_params create_params() const noexcept override;
 
     SIZE default_size() const noexcept override;
 
-    void end_dialog(dialog_result result);
+    void end_dialog(win32::dialog_result result);
 
-    LRESULT wnd_proc(const message& message) override;
+    LRESULT wnd_proc(const win32::message& message) override;
 
   private:
     friend class win32::application;
     void set_as_main_window();
-    LRESULT wm_command(const message& message);
+    LRESULT wm_command(const win32::message& message);
 
     struct data {
       bool main_window = false;
       bool show_dialog = false;
-      dialog_result dialog_result = dialog_result::none;
+      win32::dialog_result dialog_result = win32::dialog_result::none;
     };
     std::shared_ptr<data> data_ = std::make_shared<data>();
   };
