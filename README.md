@@ -1,7 +1,7 @@
 # win32_gui
 
 * C++ Win32 gui draft project used to experiment with [xtd](https://gammasoft71.wixsite.com/xtdpro).
-* DO NOT USE this project for your projects.
+* DO NOT USE this project for your developments.
 * I put it at the disposal of the community because it can be an inspiration for you and because it could be a good start to start a Win32 project properly.
 
 ## This project contains
