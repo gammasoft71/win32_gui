@@ -23,10 +23,10 @@ dialog_result form::show_dialog(const iwin32_window& control) {
   EnableWindow(control.handle(), false);
   data_->show_dialog = true;
   show();
-  MSG message;
   while (data_->show_dialog) {
-    GetMessage(&message, nullptr, 0, 0);
-    DispatchMessage(&message);
+    if (application::enter_thread_modal) application::enter_thread_modal(event_args::empty);
+    application::do_events();
+    if (application::leave_thread_modal) application::leave_thread_modal(event_args::empty);
   }
   data_->show_dialog = false;
   EnableWindow(control.handle(), true);
@@ -50,7 +50,7 @@ void form::end_dialog(dialog_result dialog_result) {
   data_->dialog_result = dialog_result;
 }
 
-LRESULT form::wnd_proc(const message& message) {
+void form::wnd_proc(message& message) {
   switch (message.msg) {
   case WM_CLOSE: close(); break;
   case WM_COMMAND: return wm_command(message); break;
@@ -64,7 +64,7 @@ void form::set_as_main_window() {
   show();
 }
 
-LRESULT form::wm_command(const message& message) {
+void form::wm_command(message& message) {
   if (data_->show_dialog) {
     auto control = from_handle(reinterpret_cast<HWND>(message.lparam));
     if (control.has_value() && dynamic_cast<button*>(&control.value().get())) {
@@ -73,5 +73,5 @@ LRESULT form::wm_command(const message& message) {
       }
     }
   }
-  return control::wnd_proc(message);
+  control::wnd_proc(message);
 }

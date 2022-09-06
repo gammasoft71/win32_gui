@@ -7,5 +7,6 @@ namespace win32 {
     UINT msg = WM_NULL;
     WPARAM wparam = 0;
     LPARAM lparam = 0;
+    LRESULT result = 0;
   };
 }

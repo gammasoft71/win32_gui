@@ -43,13 +43,13 @@ namespace win32 {
 
     void end_dialog(win32::dialog_result result);
 
-    LRESULT wnd_proc(const win32::message& message) override;
+    void wnd_proc(win32::message& message) override;
     /// @}
 
   private:
     friend class win32::application;
     void set_as_main_window();
-    LRESULT wm_command(const win32::message& message);
+    void wm_command(win32::message& message) override;
 
     struct data {
       bool main_window = false;

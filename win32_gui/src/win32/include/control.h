@@ -112,17 +112,17 @@ namespace win32 {
 
     void create_handle();
 
-    virtual LRESULT def_wnd_proc(const message& message);
+    virtual void def_wnd_proc(message& message);
 
     void destroy_handle();
 
     void recreate_handle();
 
-    LRESULT reflect_message(HWND handle, const message& message);
+    void reflect_message(HWND handle, message& message);
 
     void set_bound_core(int x, int y, int width, int height, bounds_specified specified);
 
-    virtual LRESULT wnd_proc(const message& message);
+    virtual void wnd_proc(message& message);
 
     virtual void on_click(const event_args& e);
 
@@ -143,32 +143,32 @@ namespace win32 {
 
   private:
     static LRESULT CALLBACK wnd_proc_(HWND hwnd, UINT message, WPARAM wparam, LPARAM lparam);
-    virtual LRESULT wm_child_activate(const message& message);
-    virtual LRESULT wm_command(const message& message);
-    virtual LRESULT wm_ctlcolor(const message& message);
-    virtual LRESULT wm_create(const message& message);
-    virtual LRESULT wm_enter_idle(const message& message);
-    virtual LRESULT wm_erasebkgnd(const message& message);
-    virtual LRESULT wm_help(const message& message);
-    virtual LRESULT wm_key_char(const message& message);
-    virtual LRESULT wm_kill_focus(const message& message);
-    virtual LRESULT wm_menu_command(const message& message);
-    virtual LRESULT wm_mouse_down(const message& message);
-    virtual LRESULT wm_mouse_double_click(const message& message);
-    virtual LRESULT wm_mouse_enter(const message& message);
-    virtual LRESULT wm_mouse_leave(const message& message);
-    virtual LRESULT wm_mouse_move(const message& message);
-    virtual LRESULT wm_mouse_up(const message& message);
-    virtual LRESULT wm_mouse_wheel(const message& message);
-    virtual LRESULT wm_move(const message& message);
-    virtual LRESULT wm_notify(const message& message);
-    virtual LRESULT wm_paint(const message& message);
-    virtual LRESULT wm_scroll(const message& message);
-    virtual LRESULT wm_set_focus(const message& message);
-    virtual LRESULT wm_set_text(const message& message);
-    virtual LRESULT wm_show(const message& message);
-    virtual LRESULT wm_size(const message& message);
-    virtual LRESULT wm_sizing(const message& message);
+    virtual void wm_child_activate(message& message);
+    virtual void wm_command(message& message);
+    virtual void wm_ctlcolor(message& message);
+    virtual void wm_create(message& message);
+    virtual void wm_enter_idle(message& message);
+    virtual void wm_erasebkgnd(message& message);
+    virtual void wm_help(message& message);
+    virtual void wm_key_char(message& message);
+    virtual void wm_kill_focus(message& message);
+    virtual void wm_menu_command(message& message);
+    virtual void wm_mouse_down(message& message);
+    virtual void wm_mouse_double_click(message& message);
+    virtual void wm_mouse_enter(message& message);
+    virtual void wm_mouse_leave(message& message);
+    virtual void wm_mouse_move(message& message);
+    virtual void wm_mouse_up(message& message);
+    virtual void wm_mouse_wheel(message& message);
+    virtual void wm_move(message& message);
+    virtual void wm_notify(message& message);
+    virtual void wm_paint(message& message);
+    virtual void wm_scroll(message& message);
+    virtual void wm_set_focus(message& message);
+    virtual void wm_set_text(message& message);
+    virtual void wm_show(message& message);
+    virtual void wm_size(message& message);
+    virtual void wm_sizing(message& message);
  
     inline static std::map<HWND, control*> controls_;
     struct data {

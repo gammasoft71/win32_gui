@@ -14,11 +14,17 @@ namespace win32 {
   public:
     /// @name Events
     /// @{
+
+    static std::function<void(const event_args&)> application_exit;
+    static std::function<void(const event_args&)> enter_thread_modal;
     static std::function<void(const event_args&)> idle;
+    static std::function<void(const event_args&)> leave_thread_modal;
+    static std::function<void(const event_args&)> thread_exit;
     /// @{
 
     /// @name Methods
     /// @{
+    static void do_events();
 
     static void exit();
     static void exit(int exit_code);
@@ -29,11 +35,12 @@ namespace win32 {
     /// @}
 
   private:
+    static bool do_events_();
     friend class win32::control;
     application() = delete;
-    static LRESULT wnd_proc(const message& message);
-    static LRESULT wm_activateapp(const message& message);
-    static LRESULT wm_app_ilde(const message& message);
-    static LRESULT wm_quit(const message& message);
+    static void wnd_proc(message& message);
+    static void wm_activateapp(message& message);
+    static void wm_app_ilde(message& message);
+    static void wm_quit(message& message);
   };
 }

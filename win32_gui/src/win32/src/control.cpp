@@ -221,8 +221,8 @@ void control::create_handle() {
   on_handle_created(event_args::empty);
 }
 
-LRESULT control::def_wnd_proc(const message& message) {
-  return CallWindowProc(data_->def_wnd_proc, message.hwnd, message.msg, message.wparam, message.lparam);
+void control::def_wnd_proc(message& message) {
+  message.result = CallWindowProc(data_->def_wnd_proc, message.hwnd, message.msg, message.wparam, message.lparam);
 }
 
 void control::destroy_handle() {
@@ -239,8 +239,8 @@ void control::recreate_handle() {
   create_handle();
 }
 
-LRESULT control::reflect_message(HWND handle, const message& message) {
-  return SendMessage(handle, WM_REFLECT + message.msg, message.wparam, message.lparam);
+void control::reflect_message(HWND handle, message& message) {
+  message.result = SendMessage(handle, WM_REFLECT + message.msg, message.wparam, message.lparam);
 }
 
 void control::set_bound_core(int x, int y, int width, int height, bounds_specified specified) {
@@ -255,7 +255,7 @@ void control::set_bound_core(int x, int y, int width, int height, bounds_specifi
   }
 }
 
-LRESULT control::wnd_proc(const message& message) {
+void control::wnd_proc(message& message) {
   switch (message.msg) {
   // Keuboard events
   case WM_CHAR:
@@ -268,15 +268,15 @@ LRESULT control::wnd_proc(const message& message) {
   case WM_LBUTTONDOWN:
   case WM_MBUTTONDOWN:
   case WM_RBUTTONDOWN:
-  case WM_XBUTTONDOWN: return wm_mouse_down(message); break;
+  case WM_XBUTTONDOWN: wm_mouse_down(message); break;
   case WM_LBUTTONDBLCLK:
   case WM_MBUTTONDBLCLK:
   case WM_RBUTTONDBLCLK:
-  case WM_XBUTTONDBLCLK: return wm_mouse_double_click(message); break;
+  case WM_XBUTTONDBLCLK: wm_mouse_double_click(message); break;
   case WM_LBUTTONUP:
   case WM_MBUTTONUP:
   case WM_RBUTTONUP:
-  case WM_XBUTTONUP: return wm_mouse_up(message); break;
+  case WM_XBUTTONUP: wm_mouse_up(message); break;
   case WM_MOUSEMOVE: wm_mouse_move(message); break;
   case WM_MOUSEENTER: wm_mouse_enter(message); break;
   case WM_MOUSELEAVE: wm_mouse_leave(message); break;
@@ -290,20 +290,20 @@ LRESULT control::wnd_proc(const message& message) {
   case WM_CTLCOLORSCROLLBAR:
   case WM_CTLCOLOREDIT:
   case WM_CTLCOLORLISTBOX:
-  case WM_CTLCOLORSTATIC: return reflect_message(reinterpret_cast<HWND>(message.lparam), message); break;
-  case WM_ERASEBKGND: return wm_erasebkgnd(message); break;
+  case WM_CTLCOLORSTATIC: reflect_message(reinterpret_cast<HWND>(message.lparam), message); break;
+  case WM_ERASEBKGND: wm_erasebkgnd(message); break;
   // Scrolling events
   case WM_HSCROLL:
-  case WM_VSCROLL: return reflect_message(reinterpret_cast<HWND>(message.lparam), message); break;
+  case WM_VSCROLL: reflect_message(reinterpret_cast<HWND>(message.lparam), message); break;
   // System events
   case WM_CHILDACTIVATE: wm_child_activate(message); break;
-  case WM_COMMAND: return reflect_message(reinterpret_cast<HWND>(message.lparam), message); break;
+  case WM_COMMAND: reflect_message(reinterpret_cast<HWND>(message.lparam), message); break;
   case WM_CREATE: wm_create(message); break;
   case WM_HELP: wm_help(message); break;
   case WM_KILLFOCUS: wm_kill_focus(message); break;
   case WM_MENUCOMMAND: wm_menu_command(message); break;
   case WM_MOVE: wm_move(message);  break;
-  case WM_NOTIFY: return reflect_message(reinterpret_cast<HWND>(reinterpret_cast<NMHDR*>(message.lparam)->hwndFrom), message); break;
+  case WM_NOTIFY: reflect_message(reinterpret_cast<HWND>(reinterpret_cast<NMHDR*>(message.lparam)->hwndFrom), message); break;
   case WM_PAINT: wm_paint(message); break;
   case WM_SETFOCUS: wm_set_focus(message); break;
   case WM_SETTEXT: wm_set_text(message); break;
@@ -317,14 +317,13 @@ LRESULT control::wnd_proc(const message& message) {
   case WM_REFLECT + WM_CTLCOLORSCROLLBAR:
   case WM_REFLECT + WM_CTLCOLOREDIT:
   case WM_REFLECT + WM_CTLCOLORLISTBOX:
-  case WM_REFLECT + WM_CTLCOLORSTATIC: return wm_ctlcolor(message); break;
-  case WM_REFLECT + WM_COMMAND: return wm_command(message); break;
+  case WM_REFLECT + WM_CTLCOLORSTATIC: wm_ctlcolor(message); break;
+  case WM_REFLECT + WM_COMMAND: wm_command(message); break;
   case WM_REFLECT + WM_NOTIFY: wm_notify(message);  break;
   case WM_REFLECT + WM_HSCROLL:
   case WM_REFLECT + WM_VSCROLL: wm_scroll(message); break;
-  default: return def_wnd_proc(message);
+  default: def_wnd_proc(message);
   }
-  return def_wnd_proc(message);
 }
 
 void control::on_click(const event_args& e) {
@@ -358,128 +357,128 @@ void control::on_size_changed(const event_args& e) {
 }
 
 
-LRESULT CALLBACK control::wnd_proc_(HWND hwnd, UINT message, WPARAM wparam, LPARAM lparam) {
-  if (message == WM_ACTIVATEAPP) return application::wnd_proc({hwnd, message, wparam, lparam});
+LRESULT CALLBACK control::wnd_proc_(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam) {
+  win32::message message = { hwnd, msg, wparam, lparam, 0 };
   auto control = from_handle(hwnd);
-  if (control.has_value()) return control.value().get().wnd_proc({hwnd, message, wparam, lparam});
-  return DefWindowProc(hwnd, message, wparam, lparam);
+  if (msg == WM_ACTIVATEAPP) application::wnd_proc(message);
+  else if (!control.has_value()) return DefWindowProc(hwnd, msg, wparam, lparam);
+  else control.value().get().wnd_proc(message);
+  return message.result;
 }
 
-LRESULT control::wm_child_activate(const message& message) {
-  return def_wnd_proc(message);
+void control::wm_child_activate(message& message) {
+  def_wnd_proc(message);
 }
 
-LRESULT control::wm_command(const message& message) {
+void control::wm_command(message& message) {
   on_click(event_args::empty);
-  return def_wnd_proc(message);
+  def_wnd_proc(message);
 }
 
-LRESULT control::wm_ctlcolor(const message& message) {
+void control::wm_ctlcolor(message& message) {
   HDC hdc = reinterpret_cast<HDC>(message.wparam);
   debug::write_line(string_format(L"%p - wm_ctlcolorstatic - back color {0x%06X}", handle(), back_color()));
   SetBkMode(hdc, TRANSPARENT);
   SetTextColor(hdc, fore_color());
   SetBkColor(hdc, back_color());
 
-  if (data_->back_brush == nullptr)
-    data_->back_brush = CreateSolidBrush(back_color());
-  return reinterpret_cast<LRESULT>(data_->back_brush);
+  if (data_->back_brush == nullptr) data_->back_brush = CreateSolidBrush(back_color());
+  message.result = reinterpret_cast<LRESULT>(data_->back_brush);
 }
 
-LRESULT control::wm_create(const message& message) {
-  return def_wnd_proc(message);
+void control::wm_create(message& message) {
+  def_wnd_proc(message);
 }
 
-LRESULT control::wm_enter_idle(const message& message) {
-  return def_wnd_proc(message);
+void control::wm_enter_idle(message& message) {
+  def_wnd_proc(message);
 }
 
-LRESULT control::wm_erasebkgnd(const message& message) {
+void control::wm_erasebkgnd(message& message) {
   HDC hdc = reinterpret_cast<HDC>(message.wparam);
   RECT rect;
   GetClientRect(handle(), &rect); /// @todo findd best mthod to get rect.
   HBRUSH brush = CreateSolidBrush(back_color());
   FillRect(hdc, &rect, brush);
   DeleteObject(brush);
-  return 0;
 }
 
-LRESULT control::wm_help(const message& message) {
-  return def_wnd_proc(message);
+void control::wm_help(message& message) {
+  def_wnd_proc(message);
 }
 
-LRESULT control::wm_key_char(const message& message) {
-  return def_wnd_proc(message);
+void control::wm_key_char(message& message) {
+  def_wnd_proc(message);
 }
 
-LRESULT control::wm_kill_focus(const message& message) {
-  return def_wnd_proc(message);
+void control::wm_kill_focus(message& message) {
+  def_wnd_proc(message);
 }
 
-LRESULT control::wm_menu_command(const message& message) {
-  return def_wnd_proc(message);
+void control::wm_menu_command(message& message) {
+  def_wnd_proc(message);
 }
 
-LRESULT control::wm_mouse_down(const message& message) {
-  return def_wnd_proc(message);
+void control::wm_mouse_down(message& message) {
+  def_wnd_proc(message);
 }
 
-LRESULT control::wm_mouse_double_click(const message& message) {
-  return def_wnd_proc(message);
+void control::wm_mouse_double_click(message& message) {
+  def_wnd_proc(message);
 }
 
-LRESULT control::wm_mouse_enter(const message& message) {
-  return def_wnd_proc(message);
+void control::wm_mouse_enter(message& message) {
+  def_wnd_proc(message);
 }
 
-LRESULT control::wm_mouse_leave(const message& message) {
-  return def_wnd_proc(message);
+void control::wm_mouse_leave(message& message) {
+  def_wnd_proc(message);
 }
 
-LRESULT control::wm_mouse_move(const message& message) {
-  return def_wnd_proc(message);
+void control::wm_mouse_move(message& message) {
+  def_wnd_proc(message);
 }
 
-LRESULT control::wm_mouse_up(const message& message) {
-  return def_wnd_proc(message);
+void control::wm_mouse_up(message& message) {
+  def_wnd_proc(message);
 }
 
-LRESULT control::wm_mouse_wheel(const message& message) {
-  return def_wnd_proc(message);
+void control::wm_mouse_wheel(message& message) {
+  def_wnd_proc(message);
 }
 
-LRESULT control::wm_move(const message& message) {
-  return def_wnd_proc(message);
+void control::wm_move(message& message) {
+  def_wnd_proc(message);
 }
 
-LRESULT control::wm_notify(const message& message) {
-  return def_wnd_proc(message);
+void control::wm_notify(message& message) {
+  def_wnd_proc(message);
 }
 
-LRESULT control::wm_paint(const message& message) {
-  return def_wnd_proc(message);
+void control::wm_paint(message& message) {
+  def_wnd_proc(message);
 }
 
-LRESULT control::wm_scroll(const message& message) {
-  return def_wnd_proc(message);
+void control::wm_scroll(message& message) {
+  def_wnd_proc(message);
 }
 
-LRESULT control::wm_set_focus(const message& message) {
-  return def_wnd_proc(message);
+void control::wm_set_focus(message& message) {
+  def_wnd_proc(message);
 }
 
-LRESULT control::wm_set_text(const message& message) {
-  return def_wnd_proc(message);
+void control::wm_set_text(message& message) {
+  def_wnd_proc(message);
 }
 
-LRESULT control::wm_show(const message& message) {
-  return def_wnd_proc(message);
+void control::wm_show(message& message) {
+  def_wnd_proc(message);
 }
 
-LRESULT control::wm_size(const message& message) {
-  return def_wnd_proc(message);
+void control::wm_size(message& message) {
+  def_wnd_proc(message);
 }
 
-LRESULT control::wm_sizing(const message& message) {
-  return def_wnd_proc(message);
+void control::wm_sizing(message& message) {
+  def_wnd_proc(message);
 }
