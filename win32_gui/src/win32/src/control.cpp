@@ -294,7 +294,7 @@ LRESULT control::wnd_proc(const message& message) {
   case WM_ERASEBKGND: return wm_erasebkgnd(message); break;
   // Scrolling events
   case WM_HSCROLL:
-  case WM_VSCROLL: wm_scroll(message); break;
+  case WM_VSCROLL: return reflect_message(reinterpret_cast<HWND>(message.lparam), message); break;
   // System events
   case WM_CHILDACTIVATE: wm_child_activate(message); break;
   case WM_COMMAND: return reflect_message(reinterpret_cast<HWND>(message.lparam), message); break;
@@ -303,7 +303,7 @@ LRESULT control::wnd_proc(const message& message) {
   case WM_KILLFOCUS: wm_kill_focus(message); break;
   case WM_MENUCOMMAND: wm_menu_command(message); break;
   case WM_MOVE: wm_move(message);  break;
-  case WM_NOTIFY: return reflect_message(reinterpret_cast<HWND>(message.lparam), message); break;
+  case WM_NOTIFY: return reflect_message(reinterpret_cast<HWND>(reinterpret_cast<NMHDR*>(message.lparam)->hwndFrom), message); break;
   case WM_PAINT: wm_paint(message); break;
   case WM_SETFOCUS: wm_set_focus(message); break;
   case WM_SETTEXT: wm_set_text(message); break;
@@ -320,6 +320,8 @@ LRESULT control::wnd_proc(const message& message) {
   case WM_REFLECT + WM_CTLCOLORSTATIC: return wm_ctlcolor(message); break;
   case WM_REFLECT + WM_COMMAND: return wm_command(message); break;
   case WM_REFLECT + WM_NOTIFY: wm_notify(message);  break;
+  case WM_REFLECT + WM_HSCROLL:
+  case WM_REFLECT + WM_VSCROLL: wm_scroll(message); break;
   default: return def_wnd_proc(message);
   }
   return def_wnd_proc(message);
