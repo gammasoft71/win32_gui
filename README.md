@@ -29,9 +29,9 @@ int wmain(int argc, wchar_t* argv[]) {
   form1.text(L"Form1");
 
   button button1;
+  button1.location({10, 10});
   button1.parent(form1);
   button1.text(L"Click me!");
-  button1.location({10, 10});
 
   button1.click += [](control& sender, const event_args& e) {
     MessageBox(form1.handle(), L"Hello, World!", L"", MB_OK);
