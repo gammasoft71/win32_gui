@@ -1,5 +1,6 @@
 #pragma once
 #include "bounds_specified.h"
+#include "color.h"
 #include "create_params.h"
 #include "event.h"
 #include "event_handler.h"

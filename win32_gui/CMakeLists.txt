@@ -6,6 +6,7 @@ set(INCLUDES
   src/win32/include/application.h
   src/win32/include/bounds_specified.h
   src/win32/include/button.h
+  src/win32/include/color.h
   src/win32/include/control.h
   src/win32/include/create_params.h
   src/win32/include/debug.h
