@@ -23,9 +23,6 @@ using namespace win32;
 
 int wmain(int argc, wchar_t* argv[]) {
   form form1;
-  form1.back_color(RGB(255, 0, 0));
-  form1.fore_color(RGB(0, 255, 0));
-  form1.size({800, 450});
   form1.text(L"Form1");
 
   button button1;
