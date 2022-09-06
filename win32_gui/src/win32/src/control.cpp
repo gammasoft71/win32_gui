@@ -166,7 +166,6 @@ control& control::top(int value) {
   return *this;
 }
 
-
 std::optional<std::reference_wrapper<control>> control::from_handle(HWND handle) noexcept {
   if (handle == nullptr) return std::nullopt;
   auto it = controls_.find(handle);

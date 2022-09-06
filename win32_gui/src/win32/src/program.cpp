@@ -1,5 +1,3 @@
-#pragma comment(linker,"\"/manifestdependency:type='win32' name='Microsoft.Windows.Common-Controls' version='6.0.0.0' processorArchitecture='*' publicKeyToken='6595b64144ccf1df' language='*'\"")
-
 #include "../include/debug.h"
 #include "../include/forms.h"
 
@@ -52,10 +50,11 @@ int wmain(int argc, wchar_t* argv[]) {
   label1.width(200);
 
   button1.click += [&](control& sender, const event_args& e) {
-    label1.text(L"Dialog result = ");
-    my_dialog dialog;
-    dialog_result dialog_result = dialog.show_dialog(form1);
-    label1.text(string_format(L"Dialog result = %d", static_cast<int>(dialog_result)));
+    MessageBox(form1.handle(), L"Hello, World!", L"", MB_OK);
+    //label1.text(L"Dialog result = ");
+    //my_dialog dialog;
+    //dialog_result dialog_result = dialog.show_dialog(form1);
+    //label1.text(string_format(L"Dialog result = %d", static_cast<int>(dialog_result)));
   };
 
   application::idle += [&](const event_args& e) {
