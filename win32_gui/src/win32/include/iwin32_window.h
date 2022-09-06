@@ -9,8 +9,8 @@ namespace win32 {
     // @endcond
 
     /// @name Properties
+   
     /// @{
-
     virtual HWND handle() const = 0;
     /// @}
   };

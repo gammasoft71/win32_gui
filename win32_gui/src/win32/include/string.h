@@ -7,9 +7,8 @@
 
 namespace win32 {
   /// @name Methods
+  
   /// @{
-
-
   inline LPCWSTR string_format(LPCWSTR format, ...) {
     thread_local static WCHAR buffer[__C_STRING_BUFFER_SIZE__];
     va_list args;

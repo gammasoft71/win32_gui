@@ -94,7 +94,7 @@ std::optional<std::reference_wrapper<control>> control::parent() const noexcept 
 control& control::parent(const control& value) {
   data_->parent = value.handle();
   SetParent(handle(), data_->parent);
-  debug::write_line(string_format(L"%p - Add parent", handle()));
+  //debug::write_line(string_format(L"%p - Add parent", handle()));
   return *this;
 
 }
@@ -217,7 +217,7 @@ void control::create_handle() {
   data_->handle = CreateWindowEx(cp.ex_styles, cp.class_name, cp.text, cp.styles, cp.x, cp.y, cp.width, cp.height, cp.parent, nullptr, nullptr, nullptr);
   data_->def_wnd_proc = reinterpret_cast<WNDPROC>(SetWindowLongPtr(data_->handle, GWLP_WNDPROC, reinterpret_cast<LONG_PTR>(wnd_proc_)));
   controls_[data_->handle] = this;
-  debug::write_line(string_format(L"%p - create handle", data_->handle));
+  //debug::write_line(string_format(L"%p - create handle", data_->handle));
   on_handle_created(event_args::empty);
 }
 
@@ -327,15 +327,15 @@ void control::wnd_proc(message& message) {
 }
 
 void control::on_click(const event_args& e) {
-  if (click) click(*this, e);
+  click(*this, e);
 }
 
 void control::on_back_color_changed(const event_args& e) {
-  if (back_color_changed) back_color_changed(*this, e);
+  back_color_changed(*this, e);
 }
 
 void control::on_fore_color_changed(const event_args& e) {
-  if (fore_color_changed) fore_color_changed(*this, e);
+  fore_color_changed(*this, e);
 }
 
 void control::on_handle_created(const event_args& e) {
@@ -345,15 +345,15 @@ void control::on_handle_destroyed(const event_args& e) {
 }
 
 void control::on_location_changed(const event_args& e) {
-  if (location_changed) location_changed(*this, e);
+  location_changed(*this, e);
 }
 
 void control::on_resize(const event_args& e) {
-  if (resize) resize(*this, e);
+  resize(*this, e);
 }
 
 void control::on_size_changed(const event_args& e) {
-  if (size_changed) size_changed(*this, e);
+  size_changed(*this, e);
 }
 
 
@@ -377,7 +377,7 @@ void control::wm_command(message& message) {
 
 void control::wm_ctlcolor(message& message) {
   HDC hdc = reinterpret_cast<HDC>(message.wparam);
-  debug::write_line(string_format(L"%p - wm_ctlcolorstatic - back color {0x%06X}", handle(), back_color()));
+  //debug::write_line(string_format(L"%p - wm_ctlcolorstatic - back color {0x%06X}", handle(), back_color()));
   SetBkMode(hdc, TRANSPARENT);
   SetTextColor(hdc, fore_color());
   SetBkColor(hdc, back_color());

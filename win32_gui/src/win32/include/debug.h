@@ -6,8 +6,8 @@ namespace win32 {
   class debug {
   public:
     /// @name Methods
-    /// @{
 
+    /// @{
     static void write(const std::wstring& message) {
 #if !defined(NDEBUG) || defined(DEBUG) || defined(TRACE)
       __write__(message);

@@ -51,24 +51,34 @@ int wmain(int argc, wchar_t* argv[]) {
   label1.location({ 10, 40 });
   label1.width(200);
 
-  button1.click = [&](control& sender, const event_args& e) {
+  button1.click += [&](control& sender, const event_args& e) {
     label1.text(L"Dialog result = ");
     my_dialog dialog;
     dialog_result dialog_result = dialog.show_dialog(form1);
     label1.text(string_format(L"Dialog result = %d", static_cast<int>(dialog_result)));
   };
 
-  application::idle = [&](const event_args& e) {
+  application::idle += [&](const event_args& e) {
     static auto cpt = 0;
     debug::write_line(string_format(L"idle %d", ++cpt));
   };
 
-  application::application_exit = [&](const event_args& e) {
+  application::application_exit += [&](const event_args& e) {
     static auto cpt = 0;
     debug::write_line(L"Application exit");
   };
 
-  application::thread_exit = [&](const event_args& e) {
+  application::enter_thread_modal += [&](const event_args& e) {
+    static auto cpt = 0;
+    debug::write_line(L"Enter thread modal");
+  };
+
+  application::leave_thread_modal += [&](const event_args& e) {
+    static auto cpt = 0;
+    debug::write_line(L"Leave thread modal");
+  };
+
+  application::thread_exit += [&](const event_args& e) {
     static auto cpt = 0;
     debug::write_line(L"Thread exit");
   };

@@ -10,20 +10,20 @@ namespace win32 {
   class form : public control {
   public:
     /// @name Constructors
-    /// @{
 
+    /// @{
     form() = default;
     /// @}
 
     /// @name Properties
-    /// @{
 
+    /// @{
     virtual void activate();
     /// @}
 
     /// @name Methods
-    /// @{
 
+    /// @{
     void close();
 
     win32::dialog_result show_dialog(const win32::iwin32_window& control);
@@ -31,16 +31,16 @@ namespace win32 {
 
   protected:
     /// @name Protected Properties
+    
     /// @{
-
     win32::create_params create_params() const noexcept override;
 
     SIZE default_size() const noexcept override;
     /// @}
 
     /// @name Protected Methods
-    /// @{
 
+    /// @{
     void end_dialog(win32::dialog_result result);
 
     void wnd_proc(win32::message& message) override;
@@ -49,7 +49,7 @@ namespace win32 {
   private:
     friend class win32::application;
     void set_as_main_window();
-    void wm_command(win32::message& message) override;
+    void wm_command(win32::message& message);
 
     struct data {
       bool main_window = false;

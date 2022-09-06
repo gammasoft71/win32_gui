@@ -6,8 +6,9 @@ win32::dialog_result button::dialog_result() const noexcept {
   return data_->dialog_result;
 }
 
-void button::dialog_result(win32::dialog_result value) {
+button& button::dialog_result(win32::dialog_result value) {
   data_->dialog_result = value;
+  return *this;
 }
 
 struct create_params button::create_params() const noexcept {

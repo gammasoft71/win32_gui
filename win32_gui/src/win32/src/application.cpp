@@ -9,11 +9,11 @@ using namespace std::chrono;
 using namespace std::chrono_literals;
 using namespace win32;
 
-std::function<void(const event_args&)> application::application_exit;
-std::function<void(const event_args&)> application::enter_thread_modal;
-std::function<void(const event_args&)> application::idle;
-std::function<void(const event_args&)> application::leave_thread_modal;
-std::function<void(const event_args&)> application::thread_exit;
+event<application, delegate<void(const event_args&)>> application::application_exit;
+event<application, delegate<void(const event_args&)>> application::enter_thread_modal;
+event<application, delegate<void(const event_args&)>> application::idle;
+event<application, delegate<void(const event_args&)>> application::leave_thread_modal;
+event<application, delegate<void(const event_args&)>> application::thread_exit;
 
 void application::do_events() {
   do_events_();
@@ -33,8 +33,8 @@ void application::run() {
   wnd_proc(message);
 }
 
-void application::run(const form& form) {
-  const_cast<class form&>(form).set_as_main_window();
+void application::run(const form& main_form) {
+  const_cast<class form&>(main_form).set_as_main_window();
   run();
 }
 
@@ -58,12 +58,11 @@ bool application::do_events_() {
 }
 
 void application::raise_enter_thread_modal() {
-  if (application::enter_thread_modal) application::enter_thread_modal(event_args::empty);
+  application::enter_thread_modal(event_args::empty);
 }
 
 void application::raise_leave_thread_modal() {
-  if (application::leave_thread_modal) application::leave_thread_modal(event_args::empty);
-
+  application::leave_thread_modal(event_args::empty);
 }
 
 void application::wnd_proc(message& message) {
@@ -79,10 +78,10 @@ void application::wm_activateapp(message& message) {
 }
 
 void application::wm_app_ilde(message& message) {
-  if (idle) idle(event_args::empty);
+  idle(event_args::empty);
 }
 
 void application::wm_quit(message& message) {
-  if (thread_exit) thread_exit(event_args::empty);
-  if (application_exit) application_exit(event_args::empty);
+  thread_exit(event_args::empty);
+  application_exit(event_args::empty);
 }

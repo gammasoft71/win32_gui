@@ -23,11 +23,10 @@ dialog_result form::show_dialog(const iwin32_window& control) {
   EnableWindow(control.handle(), false);
   data_->show_dialog = true;
   show();
-  while (data_->show_dialog) {
-    application::raise_enter_thread_modal();
+  application::raise_enter_thread_modal();
+  while (data_->show_dialog)
     application::do_events();
-    application::raise_leave_thread_modal();
-  }
+  application::raise_leave_thread_modal();
   data_->show_dialog = false;
   EnableWindow(control.handle(), true);
   close();

@@ -7,9 +7,11 @@ set(INCLUDES
   src/win32/include/bounds_specified.h
   src/win32/include/button.h
   src/win32/include/control.h
-  src/win32/include/debug.h
   src/win32/include/create_params.h
+  src/win32/include/debug.h
+  src/win32/include/delegate.h
   src/win32/include/dialog_result.h
+  src/win32/include/event.h
   src/win32/include/event_args.h
   src/win32/include/event_handler.h
   src/win32/include/form.h
