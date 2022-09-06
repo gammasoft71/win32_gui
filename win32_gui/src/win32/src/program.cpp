@@ -33,7 +33,7 @@ private:
 
 int wmain(int argc, wchar_t* argv[]) {
   form form1;
-  form1.back_color(color::dark_blue);
+  form1.back_color(color::navy);
   form1.fore_color(color::yellow);
   form1.size({ 800, 450 });
   form1.text(L"Form1");
@@ -50,11 +50,11 @@ int wmain(int argc, wchar_t* argv[]) {
   label1.width(200);
 
   button1.click += [&](control& sender, const event_args& e) {
-    MessageBox(form1.handle(), L"Hello, World!", L"", MB_OK);
-    //label1.text(L"Dialog result = ");
-    //my_dialog dialog;
-    //dialog_result dialog_result = dialog.show_dialog(form1);
-    //label1.text(string_format(L"Dialog result = %d", static_cast<int>(dialog_result)));
+    label1.text(L"Dialog result = ");
+    my_dialog dialog;
+    dialog.location({300, 200});
+    dialog_result dialog_result = dialog.show_dialog(form1);
+    label1.text(string_format(L"Dialog result = %d", static_cast<int>(dialog_result)));
   };
 
   application::idle += [&](const event_args& e) {

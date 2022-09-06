@@ -44,3 +44,4 @@ add_definitions(-DUNICODE)
 
 # Application properties
 add_executable(${PROJECT_NAME} WIN32 ${INCLUDES} ${SOURCES})
+target_link_libraries(${PROJECT_NAME} PUBLIC UxTheme)

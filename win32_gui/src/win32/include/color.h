@@ -2,10 +2,75 @@
 #include <Windows.h>
 
 namespace win32 {
+  /// @brief Represents an RGBA (red, green, blue, alpha) color.
   struct color {
+    /// @brief Gets the red component value of this win32::color class.
+    /// @return byte The red component value of this win32::color.
+    /// @remarks The color of each pixel is represented as a 32-bit number: 8 bits each for alpha, red, green, and blue (ARGB). The alpha component specifies the transparency of the color: 0 is fully transparent, and 255 is fully opaque. Likewise, an win32::color::a value of 255 represents an opaque color. An win32::color::a value from 1 through 254 represents a semitransparent color. The color becomes more opaque as win32::color::a approaches 255.
+    /// @par Examples
+    /// The following code example demonstrates the win32::color::a, win32::color::r, win32::color::g, and win32::color::b properties of a win32::color, and the Implicit(size?to?size_f) member.<br>
+    /// This example is designed to be used with a Windows Form. Paste the code into the form and call the show_properties_of_slate_blue method from the form's win32::control::paint event-handling method, passing e as win32::paint_event_args.
+    /// @code
+    /// void show_properties_of_slate_blue(win32::paint_event_args& e) {
+    ///   BYTE r = win32::color::slate_blue.r;
+    ///   BYTE g = win32::color::slate_blue.g;
+    ///   BYTE b = win32::color::slate_blue.b;
+    ///   BYTE a = win32::color::slate_blue.a;
+    ///   LPWCSTR text = win32::string_format(L"Slate blue has these RGBA values: alpha: %d, red: %d, green: %d, blue: %d}", r, g, b, a);
+    ///   e.graphics().draw_string(text, win32::font(font(), win32::font_style::italic), win32::solid_brush(win32::color::slate_blue), RECT {0, 0, width(), height()));
+    /// }
+    /// @endcode
     BYTE r = 0x00;
+    /// @brief Gets the green component value of this win32::color class.
+    /// @return byte The green component value of this win32::color.
+    /// @remarks The color of each pixel is represented as a 32-bit number: 8 bits each for alpha, red, green, and blue (ARGB). The alpha component specifies the transparency of the color: 0 is fully transparent, and 255 is fully opaque. Likewise, an win32::color::a value of 255 represents an opaque color. An win32::color::a value from 1 through 254 represents a semitransparent color. The color becomes more opaque as win32::color::a approaches 255.
+    /// @par Examples
+    /// The following code example demonstrates the win32::color::a, win32::color::r, win32::color::g, and win32::color::b properties of a win32::color, and the Implicit(size?to?size_f) member.<br>
+    /// This example is designed to be used with a Windows Form. Paste the code into the form and call the show_properties_of_slate_blue method from the form's win32::control::paint event-handling method, passing e as win32::paint_event_args.
+    /// @code
+    /// void show_properties_of_slate_blue(win32::paint_event_args& e) {
+    ///   BYTE r = win32::color::slate_blue.r;
+    ///   BYTE g = win32::color::slate_blue.g;
+    ///   BYTE b = win32::color::slate_blue.b;
+    ///   BYTE a = win32::color::slate_blue.a;
+    ///   LPWCSTR text = win32::string_format(L"Slate blue has these RGBA values: alpha: %d, red: %d, green: %d, blue: %d}", r, g, b, a);
+    ///   e.graphics().draw_string(text, win32::font(font(), win32::font_style::italic), win32::solid_brush(win32::color::slate_blue), RECT {0, 0, width(), height()));
+    /// }
+    /// @endcode
     BYTE g = 0x00;
+    /// @brief Gets the blue component value of this win32::color class.
+    /// @return byte The blue component value of this win32::color.
+    /// @remarks The color of each pixel is represented as a 32-bit number: 8 bits each for alpha, red, green, and blue (ARGB). The alpha component specifies the transparency of the color: 0 is fully transparent, and 255 is fully opaque. Likewise, an win32::color::a value of 255 represents an opaque color. An win32::color::a value from 1 through 254 represents a semitransparent color. The color becomes more opaque as win32::color::a approaches 255.
+    /// @par Examples
+    /// The following code example demonstrates the win32::color::a, win32::color::r, win32::color::g, and win32::color::b properties of a win32::color, and the Implicit(size?to?size_f) member.<br>
+    /// This example is designed to be used with a Windows Form. Paste the code into the form and call the show_properties_of_slate_blue method from the form's win32::control::paint event-handling method, passing e as win32::paint_event_args.
+    /// @code
+    /// void show_properties_of_slate_blue(win32::paint_event_args& e) {
+    ///   BYTE r = win32::color::slate_blue.r;
+    ///   BYTE g = win32::color::slate_blue.g;
+    ///   BYTE b = win32::color::slate_blue.b;
+    ///   BYTE a = win32::color::slate_blue.a;
+    ///   LPWCSTR text = win32::string_format(L"Slate blue has these RGBA values: alpha: %d, red: %d, green: %d, blue: %d}", r, g, b, a);
+    ///   e.graphics().draw_string(text, win32::font(font(), win32::font_style::italic), win32::solid_brush(win32::color::slate_blue), RECT {0, 0, width(), height()));
+    /// }
+    /// @endcode
     BYTE b = 0x00;
+    /// @brief Gets or sets the alpha component value of this win32::color class.
+    /// @return The alpha component value of this win32::color.
+    /// @remarks The color of each pixel is represented as a 32-bit number: 8 bits each for alpha, red, green, and blue (ARGB). The alpha component specifies the transparency of the color: 0 is fully transparent, and 255 is fully opaque. Likewise, an win32::color::a value of 255 represents an opaque color. An win32::color::a value from 1 through 254 represents a semitransparent color. The color becomes more opaque as win32::color::a approaches 255.
+    /// @par Examples
+    /// The following code example demonstrates the win32::color::a, win32::color::r, win32::color::g, and win32::color::b properties of a win32::color, and the Implicit(size?to?size_f) member.<br>
+    /// This example is designed to be used with a Windows Form. Paste the code into the form and call the show_properties_of_slate_blue method from the form's win32::control::paint event-handling method, passing e as win32::paint_event_args.
+    /// @code
+    /// void show_properties_of_slate_blue(win32::paint_event_args& e) {
+    ///   BYTE r = win32::color::slate_blue.r;
+    ///   BYTE g = win32::color::slate_blue.g;
+    ///   BYTE b = win32::color::slate_blue.b;
+    ///   BYTE a = win32::color::slate_blue.a;
+    ///   LPWCSTR text = win32::string_format(L"Slate blue has these RGBA values: alpha: %d, red: %d, green: %d, blue: %d}", r, g, b, a);
+    ///   e.graphics().draw_string(text, win32::font(font(), win32::font_style::italic), win32::solid_brush(win32::color::slate_blue), RECT {0, 0, width(), height()));
+    /// }
+    /// @endcode
     BYTE a = 0xFF;
 
     operator COLORREF() {

@@ -216,6 +216,7 @@ void control::create_handle() {
   data_->handle = CreateWindowEx(cp.ex_styles, cp.class_name, cp.text, cp.styles, cp.x, cp.y, cp.width, cp.height, cp.parent, nullptr, nullptr, nullptr);
   data_->def_wnd_proc = reinterpret_cast<WNDPROC>(SetWindowLongPtr(data_->handle, GWLP_WNDPROC, reinterpret_cast<LONG_PTR>(wnd_proc_)));
   controls_[data_->handle] = this;
+  //SetWindowTheme(data_->handle, L"Explorer", nullptr);
   //debug::write_line(string_format(L"%p - create handle", data_->handle));
   on_handle_created(event_args::empty);
 }
