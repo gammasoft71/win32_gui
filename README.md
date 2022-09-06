@@ -33,12 +33,6 @@ int wmain(int argc, wchar_t* argv[]) {
   button1.text(L"Click me!");
   button1.location({10, 10});
 
-  label label1;
-  label1.parent(form1);
-  label1.text(L"Dialog result = ");
-  label1.location({ 10, 40 });
-  label1.width(200);
-
   button1.click += [](control& sender, const event_args& e) {
     MessageBox(form1.handle(), L"Hello, World!", L"", MB_OK);
  };
