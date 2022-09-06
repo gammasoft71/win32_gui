@@ -57,6 +57,15 @@ bool application::do_events_() {
   return true;
 }
 
+void application::raise_enter_thread_modal() {
+  if (application::enter_thread_modal) application::enter_thread_modal(event_args::empty);
+}
+
+void application::raise_leave_thread_modal() {
+  if (application::leave_thread_modal) application::leave_thread_modal(event_args::empty);
+
+}
+
 void application::wnd_proc(message& message) {
   switch (message.msg) {
   case WM_ACTIVATEAPP: wm_activateapp(message); break;

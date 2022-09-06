@@ -24,9 +24,9 @@ dialog_result form::show_dialog(const iwin32_window& control) {
   data_->show_dialog = true;
   show();
   while (data_->show_dialog) {
-    if (application::enter_thread_modal) application::enter_thread_modal(event_args::empty);
+    application::raise_enter_thread_modal();
     application::do_events();
-    if (application::leave_thread_modal) application::leave_thread_modal(event_args::empty);
+    application::raise_leave_thread_modal();
   }
   data_->show_dialog = false;
   EnableWindow(control.handle(), true);

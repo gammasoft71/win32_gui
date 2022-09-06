@@ -35,9 +35,12 @@ namespace win32 {
     /// @}
 
   private:
-    static bool do_events_();
     friend class win32::control;
+    friend class win32::form;
     application() = delete;
+    static bool do_events_();
+    static void raise_enter_thread_modal();
+    static void raise_leave_thread_modal();
     static void wnd_proc(message& message);
     static void wm_activateapp(message& message);
     static void wm_app_ilde(message& message);

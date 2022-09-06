@@ -1,5 +1,6 @@
 #pragma comment(linker,"\"/manifestdependency:type='win32' name='Microsoft.Windows.Common-Controls' version='6.0.0.0' processorArchitecture='*' publicKeyToken='6595b64144ccf1df' language='*'\"")
 
+#include "../include/debug.h"
 #include "../include/forms.h"
 
 using namespace win32;
@@ -55,6 +56,21 @@ int wmain(int argc, wchar_t* argv[]) {
     my_dialog dialog;
     dialog_result dialog_result = dialog.show_dialog(form1);
     label1.text(string_format(L"Dialog result = %d", static_cast<int>(dialog_result)));
+  };
+
+  application::idle = [&](const event_args& e) {
+    static auto cpt = 0;
+    debug::write_line(string_format(L"idle %d", ++cpt));
+  };
+
+  application::application_exit = [&](const event_args& e) {
+    static auto cpt = 0;
+    debug::write_line(L"Application exit");
+  };
+
+  application::thread_exit = [&](const event_args& e) {
+    static auto cpt = 0;
+    debug::write_line(L"Thread exit");
   };
 
   application::run(form1);
