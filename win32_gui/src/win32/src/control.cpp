@@ -111,7 +111,7 @@ control& control::size(SIZE value) {
   return *this;
 }
 
-std::wstring control::text() const noexcept { 
+const std::wstring& control::text() const noexcept { 
   return data_->text;
 }
 
@@ -282,13 +282,13 @@ void control::wnd_proc(message& message) {
   case WM_MOUSEHWHEEL:
   case WM_MOUSEWHEEL: wm_mouse_wheel(message); break;
   // Color events
-  //case WM_CTLCOLORDLG: /// @todo to process
-  //case WM_CTLCOLORMSGBOX: /// @todo to process
   case WM_CTLCOLOR:
   case WM_CTLCOLORBTN:
-  case WM_CTLCOLORSCROLLBAR:
+  case WM_CTLCOLORDLG:
   case WM_CTLCOLOREDIT:
   case WM_CTLCOLORLISTBOX:
+  case WM_CTLCOLORMSGBOX:
+  case WM_CTLCOLORSCROLLBAR:
   case WM_CTLCOLORSTATIC: reflect_message(reinterpret_cast<HWND>(message.lparam), message); break;
   case WM_ERASEBKGND: wm_erasebkgnd(message); break;
   // Scrolling events
@@ -310,6 +310,7 @@ void control::wnd_proc(message& message) {
   case WM_SIZE: wm_size(message); break;
   case WM_SIZING: wm_sizing(message); break;
   case WM_ENTERIDLE: wm_enter_idle(message); break;
+  case WM_DROPFILES: wm_drop_files(message); break;
   // Reflect events
   case WM_REFLECT + WM_CTLCOLOR:
   case WM_REFLECT + WM_CTLCOLORBTN:
@@ -390,6 +391,10 @@ void control::wm_create(message& message) {
 }
 
 void control::wm_enter_idle(message& message) {
+  def_wnd_proc(message);
+}
+
+void control::wm_drop_files(message& message) {
   def_wnd_proc(message);
 }
 

@@ -66,7 +66,7 @@ namespace win32 {
     virtual SIZE size() const noexcept;
     virtual control& size(SIZE value);
 
-    virtual std::wstring text() const noexcept;
+    virtual const std::wstring& text() const noexcept;
     virtual control& text(std::wstring value);
 
     virtual bool visible() const noexcept;
@@ -156,6 +156,7 @@ namespace win32 {
     void wm_command(message& message);
     void wm_ctlcolor(message& message);
     void wm_create(message& message);
+    void wm_drop_files(message& message);
     void wm_enter_idle(message& message);
     void wm_erasebkgnd(message& message);
     void wm_help(message& message);
