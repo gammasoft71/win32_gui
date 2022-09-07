@@ -28,6 +28,7 @@ set(INCLUDES
 set(SOURCES
   src/win32/src/application.cpp
   src/win32/src/button.cpp
+  src/win32/src/color.cpp
   src/win32/src/control.cpp
   src/win32/src/dark_mode.cpp
   src/win32/src/debug.cpp
