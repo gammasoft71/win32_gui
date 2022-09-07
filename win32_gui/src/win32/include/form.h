@@ -12,13 +12,16 @@ namespace win32 {
     /// @name Constructors
 
     /// @{
-    form() = default;
+    form();
     /// @}
 
     /// @name Properties
 
     /// @{
     virtual void activate();
+    using control::client_size;
+    control& client_size(SIZE value) override;
+
     /// @}
 
     /// @name Methods
@@ -52,6 +55,7 @@ namespace win32 {
     void wm_command(win32::message& message);
 
     struct data {
+      HWND main_menu = nullptr;
       bool main_window = false;
       bool show_dialog = false;
       win32::dialog_result dialog_result = win32::dialog_result::none;

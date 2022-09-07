@@ -9,6 +9,7 @@ set(INCLUDES
   src/win32/include/color.h
   src/win32/include/control.h
   src/win32/include/create_params.h
+  src/win32/include/dark_mode.h
   src/win32/include/debug.h
   src/win32/include/delegate.h
   src/win32/include/dialog_result.h
@@ -27,6 +28,7 @@ set(SOURCES
   src/win32/src/application.cpp
   src/win32/src/button.cpp
   src/win32/src/control.cpp
+  src/win32/src/dark_mode.cpp
   src/win32/src/debug.cpp
   src/win32/src/form.cpp
   src/win32/src/label.cpp

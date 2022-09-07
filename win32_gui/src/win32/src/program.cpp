@@ -33,8 +33,8 @@ private:
 
 int wmain(int argc, wchar_t* argv[]) {
   form form1;
-  form1.back_color(color::navy);
-  form1.fore_color(color::yellow);
+  //form1.back_color(color::navy);
+  //form1.fore_color(color::yellow);
   form1.size({ 800, 450 });
   form1.text(L"Form1");
 
@@ -58,8 +58,8 @@ int wmain(int argc, wchar_t* argv[]) {
   };
 
   application::idle += [&](const event_args& e) {
-    static auto cpt = 0;
-    debug::write_line(string_format(L"idle %d", ++cpt));
+    //static auto cpt = 0;
+    //debug::write_line(string_format(L"idle %d", ++cpt));
   };
 
   application::application_exit += [&](const event_args& e) {
@@ -81,6 +81,8 @@ int wmain(int argc, wchar_t* argv[]) {
     static auto cpt = 0;
     debug::write_line(L"Thread exit");
   };
+
+  button1.invalidate();
 
   application::run(form1);
 }

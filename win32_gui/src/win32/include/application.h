@@ -4,6 +4,7 @@
 #include "message.h"
 #include <Windows.h>
 #include <functional>
+#include <optional>
 
 namespace win32 {
   /// @cond
@@ -21,6 +22,13 @@ namespace win32 {
   class application /* static */ {
   public:
     /// @name Events
+
+    /// @{
+    static bool dark_mode_enabled();
+    static bool light_mode_enabled();
+    /// @}
+
+    /// @name Events
     
     /// @{
     /// @brief Occurs when the application is about to shut down.
@@ -36,7 +44,7 @@ namespace win32 {
     /// @brief Occurs when a thread is about to shut down. When the main thread for an application is about to be shut down, this event is raised first, followed by an application_exit event.
     /// @remarks You must attach the event handlers to the thread_exit event to perform any unhandled, required tasks before the thread stops running. Close files opened by this thread, or dispose of objects that the garbage collector did not reclaim.
     static event<application, delegate<void(const event_args&)>> thread_exit;
-    /// @{
+    /// @}
 
     /// @name Methods
  
@@ -47,6 +55,9 @@ namespace win32 {
     /// @remarks Typically, you use this method in a loop to process messages.
     /// @warning Calling this method causes the current thread to be suspended while all waiting window messages are processed. If a message causes an event to be triggered, then other areas of your application code may execute. This can cause your application to exhibit unexpected behaviors that are difficult to debug. If you perform operations or computations that take a long time, it is often preferable to perform those operations on a new thread.
     static void do_events();
+
+    static void enable_dark_mode();
+    static void enable_light_mode();
 
     /// @brief Informs all message pumps that they must terminate, and then closes all application windows after the messages have been processed.
     /// @remarks The exit method stops all running message loops on all threads and closes all windows of the application. This method does not necessarily force the application to exit. The exit method is typically called from within a message loop, and forces Run to return. To exit a message loop for the current thread only, call exit_thread.
@@ -78,11 +89,15 @@ namespace win32 {
     friend class win32::form;
     application() = delete;
     static bool do_events_();
+    static bool is_system_dark_mode_enabled();
+    static void set_dark_mode();
     static void raise_enter_thread_modal();
     static void raise_leave_thread_modal();
     static void wnd_proc(message& message);
     static void wm_activateapp(message& message);
     static void wm_app_ilde(message& message);
     static void wm_quit(message& message);
+
+    inline static std::optional<bool> dark_mode_enabled_;
   };
 }

@@ -2,10 +2,10 @@
 
 using namespace win32;
 
-struct create_params label::create_params() const noexcept {
-  ::create_params cp = control::create_params();
+win32::create_params label::create_params() const noexcept {
+  win32::create_params cp = control::create_params();
   cp.class_name = WC_STATIC;
-  cp.styles |= WS_CHILD | WS_VISIBLE;
+  cp.style |= WS_CHILD | WS_VISIBLE;
   return cp;
 }
 

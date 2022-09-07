@@ -1,6 +1,8 @@
 #pragma comment(linker,"\"/manifestdependency:type='win32' name='Microsoft.Windows.Common-Controls' version='6.0.0.0' processorArchitecture='*' publicKeyToken='6595b64144ccf1df' language='*'\"")
 
 #include "../include/application.h"
+#include "../include/dark_mode.h"
+#include "../include/debug.h"
 #include "../include/form.h"
 #include "../include/window_messages.h"
 #include <chrono>
@@ -16,6 +18,14 @@ event<application, delegate<void(const event_args&)>> application::enter_thread_
 event<application, delegate<void(const event_args&)>> application::idle;
 event<application, delegate<void(const event_args&)>> application::leave_thread_modal;
 event<application, delegate<void(const event_args&)>> application::thread_exit;
+
+bool application::dark_mode_enabled() {
+  return dark_mode_enabled_.value_or(is_system_dark_mode_enabled());
+}
+
+bool application::light_mode_enabled() {
+  return !dark_mode_enabled();
+}
 
 void application::do_events() {
   do_events_();
@@ -57,6 +67,34 @@ bool application::do_events_() {
     }
   }
   return true;
+}
+
+void application::enable_dark_mode() {
+  dark_mode_enabled_ = true;
+}
+
+void application::enable_light_mode() {
+  dark_mode_enabled_ = false;
+}
+
+bool application::is_system_dark_mode_enabled() {
+  static optional<bool> system_dark_mode_enabled;
+  if (!system_dark_mode_enabled.has_value()) {
+    HKEY key;
+    if (RegOpenKeyEx(HKEY_CURRENT_USER, L"SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Themes\\Personalize", 0, KEY_READ, &key) == ERROR_SUCCESS) {
+      DWORD size_value(sizeof(DWORD));
+      DWORD value = 1;
+      RegQueryValueEx(key, L"AppsUseLightTheme", 0, nullptr, reinterpret_cast<LPBYTE>(&value), &size_value);
+      system_dark_mode_enabled = value == 0;
+    }
+  }
+  return system_dark_mode_enabled.value_or(false);
+}
+
+void application::set_dark_mode() {
+  static bool initialized = false;
+  if (!initialized) win32::dark_mode::init_dark_mode(dark_mode_enabled());
+  initialized = true;
 }
 
 void application::raise_enter_thread_modal() {

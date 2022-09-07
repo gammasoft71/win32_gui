@@ -11,10 +11,10 @@ button& button::dialog_result(win32::dialog_result value) {
   return *this;
 }
 
-struct create_params button::create_params() const noexcept {
-  ::create_params cp = control::create_params();
+win32::create_params button::create_params() const noexcept {
+  win32::create_params cp = control::create_params();
   cp.class_name = WC_BUTTON;
-  cp.styles |= WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON | BS_MULTILINE | BS_CENTER | BS_VCENTER;
+  cp.style |= WS_CHILD | BS_PUSHBUTTON | BS_MULTILINE | BS_CENTER | BS_VCENTER;
   return cp;
 }
 

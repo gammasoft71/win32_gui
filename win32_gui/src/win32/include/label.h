@@ -15,7 +15,7 @@ namespace win32 {
     /// @name Protected Properties
     
     /// @{
-    struct create_params create_params() const noexcept override;
+    win32::create_params create_params() const noexcept override;
 
     SIZE default_size() const noexcept override;
     /// @}
