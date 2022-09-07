@@ -3,7 +3,7 @@
 
 namespace win32 {
   struct create_params {
-    LPCWSTR class_name = WC_DIALOG;
+    LPCWSTR class_name = L"";
     DWORD ex_style = 0;
     int height = CW_USEDEFAULT;
     HWND parent = nullptr;

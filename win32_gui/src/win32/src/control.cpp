@@ -324,6 +324,7 @@ void control::update() const {
 
 win32::create_params control::create_params() const noexcept {
   win32::create_params cp;
+  cp.class_name = WC_DIALOG;
   cp.height = height();
   cp.parent = parent().has_value() ? parent().value().get().handle() : nullptr;
   cp.text = text().c_str();
