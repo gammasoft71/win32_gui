@@ -142,11 +142,13 @@ std::optional<std::reference_wrapper<control>> control::parent() const noexcept 
 }
 
 control& control::parent(const control& value) {
-  if (value.handle() == handle()) return *this;
-  if (value.handle() != data_->parent) parent(nullptr);
-  else on_parent_changed(event_args::empty);
+  if (value.handle() != data_->parent) {
+    if (parent().has_value()) this->parent(nullptr);
+    else on_parent_changed(event_args::empty);
+    if (value.is_handle_created()) const_cast<control&>(value).data_->controls.push_back(*this);
+  } else if (!value.is_handle_created())
+    const_cast<control&>(value).data_->controls.push_back(*this);
   data_->parent = value.handle();
-  const_cast<control&>(value).data_->controls.push_back(*this);
   if (value.is_handle_created()) create_control();
   return *this;
 }
@@ -354,6 +356,7 @@ DWORD control::style() const {
 }
 
 void control::create_handle() {
+  if (is_handle_created()) return;
   set_state(state::creating_handle, true);
   application::set_dark_mode();
   struct create_params cp = this->create_params();
@@ -396,6 +399,7 @@ void control::recreate_handle() {
 }
 
 void control::reflect_message(HWND handle, message& message) {
+  def_wnd_proc(message);
   message.result = SendMessage(handle, WM_REFLECT + message.msg, message.wparam, message.lparam);
 }
 
