@@ -2,6 +2,7 @@
 #include "../include/debug.h"
 #include "../include/application.h"
 #include "../include/control.h"
+#include "../include/system_colors.h"
 #include "../include/window_messages.h"
 
 using namespace std;
@@ -336,11 +337,11 @@ win32::create_params control::create_params() const noexcept {
 }
 
 COLORREF control::default_back_color() const {
-  return GetSysColor(COLOR_BTNFACE);
+  return system_colors::control();
 }
 
 COLORREF control::default_fore_color() const {
-  return GetSysColor(COLOR_BTNTEXT);
+  return system_colors::control_text();
 }
 
 SIZE control::default_size() const noexcept {

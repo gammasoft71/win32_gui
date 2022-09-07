@@ -22,6 +22,7 @@ set(INCLUDES
   src/win32/include/label.h
   src/win32/include/message.h
   src/win32/include/string.h
+  src/win32/include/system_colors.h
   src/win32/include/window_messages.h
 )
 set(SOURCES
@@ -32,6 +33,8 @@ set(SOURCES
   src/win32/src/debug.cpp
   src/win32/src/form.cpp
   src/win32/src/label.cpp
+  src/win32/src/system_colors.cpp
+ 
   src/win32/src/Program.cpp
 )
 source_group(src/win32/include FILES ${INCLUDES})
