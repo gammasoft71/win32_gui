@@ -290,7 +290,9 @@ namespace win32 {
     static LRESULT CALLBACK wnd_proc_(HWND hwnd, UINT message, WPARAM wparam, LPARAM lparam);
     void wm_child_activate(message& message);
     void wm_command(message& message);
+    void wm_command_control(message& message);
     void wm_ctlcolor(message& message);
+    void wm_ctlcolor_control(message& message);
     void wm_create(message& message);
     void wm_drop_files(message& message);
     void wm_enter_idle(message& message);
@@ -308,8 +310,10 @@ namespace win32 {
     void wm_mouse_wheel(message& message);
     void wm_move(message& message);
     void wm_notify(message& message);
+    void wm_notify_control(message& message);
     void wm_paint(message& message);
     void wm_scroll(message& message);
+    void wm_scroll_control(message& message);
     void wm_set_focus(message& message);
     void wm_set_text(message& message);
     void wm_show(message& message);

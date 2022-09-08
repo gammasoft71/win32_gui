@@ -401,7 +401,6 @@ void control::recreate_handle() {
 }
 
 void control::reflect_message(HWND handle, message& message) {
-  def_wnd_proc(message);
   message.result = SendMessage(handle, WM_REFLECT + message.msg, message.wparam, message.lparam);
 }
 
@@ -452,20 +451,20 @@ void control::wnd_proc(message& message) {
   case WM_CTLCOLORLISTBOX:
   case WM_CTLCOLORMSGBOX:
   case WM_CTLCOLORSCROLLBAR:
-  case WM_CTLCOLORSTATIC: reflect_message(reinterpret_cast<HWND>(message.lparam), message); break;
+  case WM_CTLCOLORSTATIC: wm_ctlcolor(message); break;
   case WM_ERASEBKGND: wm_erasebkgnd(message); break;
   // Scrolling events
   case WM_HSCROLL:
-  case WM_VSCROLL: reflect_message(reinterpret_cast<HWND>(message.lparam), message); break;
+  case WM_VSCROLL: wm_scroll(message); break;
   // System events
   case WM_CHILDACTIVATE: wm_child_activate(message); break;
-  case WM_COMMAND: reflect_message(reinterpret_cast<HWND>(message.lparam), message); break;
+  case WM_COMMAND: wm_command(message); break;
   case WM_CREATE: wm_create(message); break;
   case WM_HELP: wm_help(message); break;
   case WM_KILLFOCUS: wm_kill_focus(message); break;
   case WM_MENUCOMMAND: wm_menu_command(message); break;
   case WM_MOVE: wm_move(message);  break;
-  case WM_NOTIFY: reflect_message(reinterpret_cast<HWND>(reinterpret_cast<NMHDR*>(message.lparam)->hwndFrom), message); break;
+  case WM_NOTIFY: wm_notify(message); break;
   case WM_PAINT: wm_paint(message); break;
   case WM_SETFOCUS: wm_set_focus(message); break;
   case WM_SETTEXT: wm_set_text(message); break;
@@ -480,11 +479,11 @@ void control::wnd_proc(message& message) {
   case WM_REFLECT + WM_CTLCOLORSCROLLBAR:
   case WM_REFLECT + WM_CTLCOLOREDIT:
   case WM_REFLECT + WM_CTLCOLORLISTBOX:
-  case WM_REFLECT + WM_CTLCOLORSTATIC: wm_ctlcolor(message); break;
-  case WM_REFLECT + WM_COMMAND: wm_command(message); break;
-  case WM_REFLECT + WM_NOTIFY: wm_notify(message);  break;
+  case WM_REFLECT + WM_CTLCOLORSTATIC: wm_ctlcolor_control(message); break;
+  case WM_REFLECT + WM_COMMAND: wm_command_control(message); break;
+  case WM_REFLECT + WM_NOTIFY: wm_notify_control(message);  break;
   case WM_REFLECT + WM_HSCROLL:
-  case WM_REFLECT + WM_VSCROLL: wm_scroll(message); break;
+  case WM_REFLECT + WM_VSCROLL: wm_scroll_control(message); break;
   default: def_wnd_proc(message);
   }
 }
@@ -562,11 +561,21 @@ void control::wm_child_activate(message& message) {
 }
 
 void control::wm_command(message& message) {
+  def_wnd_proc(message);
+  reflect_message(reinterpret_cast<HWND>(message.lparam), message);
+}
+
+void control::wm_command_control(message& message) {
   on_click(event_args::empty);
   def_wnd_proc(message);
 }
 
 void control::wm_ctlcolor(message& message) {
+  def_wnd_proc(message);
+  reflect_message(reinterpret_cast<HWND>(message.lparam), message);
+}
+
+void control::wm_ctlcolor_control(message& message) {
   HDC hdc = reinterpret_cast<HDC>(message.wparam);
   //debug::write_line(string_format(L"%p - wm_ctlcolorstatic - back color {0x%06X}", handle(), back_color()));
   SetBkMode(hdc, TRANSPARENT);
@@ -647,6 +656,11 @@ void control::wm_move(message& message) {
 
 void control::wm_notify(message& message) {
   def_wnd_proc(message);
+  reflect_message(reinterpret_cast<HWND>(reinterpret_cast<NMHDR*>(message.lparam)->hwndFrom), message);
+}
+
+void control::wm_notify_control(message& message) {
+  def_wnd_proc(message);
 }
 
 void control::wm_paint(message& message) {
@@ -654,6 +668,11 @@ void control::wm_paint(message& message) {
 }
 
 void control::wm_scroll(message& message) {
+  def_wnd_proc(message);
+  reflect_message(reinterpret_cast<HWND>(message.lparam), message);
+}
+
+void control::wm_scroll_control(message& message) {
   def_wnd_proc(message);
 }
 
