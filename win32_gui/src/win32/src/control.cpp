@@ -631,6 +631,8 @@ namespace {
   UINT get_modifier_keys() {
     UINT modifier_keys = 0;
     modifier_keys |= ((GetKeyState(VK_ALT) & 0x0100) == 0x0100 ? VK_ALT_MODIFIER : 0);
+    modifier_keys |= ((GetKeyState(VK_LALT) & 0x0100) == 0x0100 ? VK_ALT_MODIFIER : 0);
+    modifier_keys |= ((GetKeyState(VK_RALT) & 0x0100) == 0x0100 ? VK_ALT_MODIFIER : 0);
     modifier_keys |= ((GetKeyState(VK_CONTROL) & 0x0100) == 0x0100 ? VK_CONTROL_MODIFIER : 0);
     modifier_keys |= ((GetKeyState(VK_LCONTROL) & 0x0100) == 0x0100 ? VK_CONTROL_MODIFIER : 0);
     modifier_keys |= ((GetKeyState(VK_RCONTROL) & 0x0100) == 0x0100 ? VK_CONTROL_MODIFIER : 0);
@@ -638,7 +640,7 @@ namespace {
     modifier_keys |= ((GetKeyState(VK_LSHIFT) & 0x0100) == 0x0100 ? VK_SHIFT_MODIFIER : 0);
     modifier_keys |= ((GetKeyState(VK_RSHIFT) & 0x0100) == 0x0100 ? VK_SHIFT_MODIFIER : 0);
     modifier_keys |= ((GetKeyState(VK_LWIN) & 0x0100) == 0x0100 ? VK_META_MODIFIER : 0);
-    modifier_keys |= ((GetKeyState(VK_LWIN) & 0x0100) == 0x0100 ? VK_META_MODIFIER : 0);
+    modifier_keys |= ((GetKeyState(VK_RWIN) & 0x0100) == 0x0100 ? VK_META_MODIFIER : 0);
     return modifier_keys;
   }
 }
