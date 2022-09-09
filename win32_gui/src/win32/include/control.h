@@ -246,14 +246,6 @@ namespace win32 {
 
     void destroy_handle();
 
-    void recreate_handle();
-
-    void reflect_message(HWND handle, message& message);
-
-    void set_bound_core(int x, int y, int width, int height, bounds_specified specified);
-
-    virtual void wnd_proc(message& message);
-
     virtual void on_click(const event_args& e);
 
     virtual void on_client_size_changed(const event_args& e);
@@ -279,6 +271,14 @@ namespace win32 {
     virtual void on_text_changed(const event_args& e);
 
     virtual void on_visible_changed(const event_args& e);
+
+    void recreate_handle();
+
+    void reflect_message(HWND handle, message& message);
+
+    void set_bound_core(int x, int y, int width, int height, bounds_specified specified);
+
+    virtual void wnd_proc(message& message);
     /// @}
 
     /// @cond
