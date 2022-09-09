@@ -1,4 +1,5 @@
 #include "../include/button.h"
+#include "../include/window_messages.h"
 
 using namespace win32;
 
@@ -20,4 +21,16 @@ win32::create_params button::create_params() const noexcept {
 
 SIZE button::default_size() const noexcept {
   return { 75, 25 }; 
+}
+
+void button::wnd_proc(message& message) {
+  switch (message.msg) {
+  case WM_REFLECT + WM_COMMAND: wm_command_control(message); break;
+  default: control::wnd_proc(message); break;
+  }
+}
+
+void button::wm_command_control(win32::message& message) {
+  control::wnd_proc(message);
+  on_click(event_args::empty);
 }

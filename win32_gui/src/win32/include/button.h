@@ -33,7 +33,7 @@ namespace win32 {
     /// @}
 
   protected:
-    /// @name Protected Methods
+    /// @name Protected Properties
     
     /// @{
     win32::create_params create_params() const noexcept override;
@@ -41,7 +41,15 @@ namespace win32 {
     SIZE default_size() const noexcept override;
     /// @}
 
+    /// @name Protected Methods
+
+    /// @{
+    void wnd_proc(message& message) override;
+    /// @}
+
   private:
+    void wm_command_control(win32::message& message);
+
     struct data {
       win32::dialog_result dialog_result = win32::dialog_result::none;
     };
