@@ -19,10 +19,15 @@ set(INCLUDES
   src/win32/include/form.h
   src/win32/include/forms.h
   src/win32/include/iwin32_window.h
+  src/win32/include/key_event_args.h
+  src/win32/include/key_event_handler.h
+  src/win32/include/key_press_event_args.h
+  src/win32/include/key_press_event_handler.h
   src/win32/include/label.h
   src/win32/include/message.h
   src/win32/include/string.h
   src/win32/include/system_colors.h
+  src/win32/include/virtual_key_codes.h
   src/win32/include/window_messages.h
 )
 set(SOURCES

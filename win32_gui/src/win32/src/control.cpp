@@ -103,19 +103,6 @@ HWND control::handle() const noexcept {
   return data_->handle;
 }
 
-POINT control::location() const noexcept {
-  return data_->location;
-}
-
-control& control::location(POINT value) {
-  bounds_specified specified = bounds_specified::none;
-  if (data_->location.x != value.x || data_->location.y != value.y) specified |= bounds_specified::x;
-  if (data_->location.x != value.x || data_->location.y != value.y) specified |= bounds_specified::x;
-  data_->location = value;
-  if (specified != bounds_specified::none) set_bound_core(left(), top(), width(), height(), specified);
-  return *this;
-}
-
 int control::height() const noexcept { 
   return data_->size.cy;
 }
@@ -137,6 +124,24 @@ control& control::left(int value) {
   set_bound_core(value, 0, 0, 0, bounds_specified::x);
   return *this;
 }
+
+POINT control::location() const noexcept {
+  return data_->location;
+}
+
+control& control::location(POINT value) {
+  bounds_specified specified = bounds_specified::none;
+  if (data_->location.x != value.x || data_->location.y != value.y) specified |= bounds_specified::x;
+  if (data_->location.x != value.x || data_->location.y != value.y) specified |= bounds_specified::x;
+  data_->location = value;
+  if (specified != bounds_specified::none) set_bound_core(left(), top(), width(), height(), specified);
+  return *this;
+}
+
+UINT control::modifier_keys() {
+  return modifier_keys_;
+}
+
 
 std::optional<std::reference_wrapper<control>> control::parent() const noexcept {
   return from_handle(data_->parent);
@@ -420,6 +425,19 @@ void control::on_handle_created(const event_args& e) {
 }
 
 void control::on_handle_destroyed(const event_args& e) {
+
+}
+
+void control::on_key_down(key_event_args& e) {
+  key_down(*this, e);
+}
+
+void control::on_key_press(key_press_event_args& e) {
+  key_press(*this, e);
+}
+
+void control::on_key_up(key_event_args& e) {
+  key_up(*this, e);
 }
 
 void control::on_location_changed(const event_args& e) {
@@ -609,8 +627,43 @@ void control::wm_help(message& message) {
   def_wnd_proc(message);
 }
 
+namespace {
+  UINT get_modifier_keys() {
+    UINT modifier_keys = 0;
+    modifier_keys |= ((GetKeyState(VK_ALT) & 0x0100) == 0x0100 ? VK_ALT_MODIFIER : 0);
+    modifier_keys |= ((GetKeyState(VK_CONTROL) & 0x0100) == 0x0100 ? VK_CONTROL_MODIFIER : 0);
+    modifier_keys |= ((GetKeyState(VK_LCONTROL) & 0x0100) == 0x0100 ? VK_CONTROL_MODIFIER : 0);
+    modifier_keys |= ((GetKeyState(VK_RCONTROL) & 0x0100) == 0x0100 ? VK_CONTROL_MODIFIER : 0);
+    modifier_keys |= ((GetKeyState(VK_SHIFT) & 0x0100) == 0x0100 ? VK_SHIFT_MODIFIER : 0);
+    modifier_keys |= ((GetKeyState(VK_LSHIFT) & 0x0100) == 0x0100 ? VK_SHIFT_MODIFIER : 0);
+    modifier_keys |= ((GetKeyState(VK_RSHIFT) & 0x0100) == 0x0100 ? VK_SHIFT_MODIFIER : 0);
+    modifier_keys |= ((GetKeyState(VK_LWIN) & 0x0100) == 0x0100 ? VK_META_MODIFIER : 0);
+    modifier_keys |= ((GetKeyState(VK_LWIN) & 0x0100) == 0x0100 ? VK_META_MODIFIER : 0);
+    return modifier_keys;
+  }
+}
+
 void control::wm_key_char(message& message) {
-  def_wnd_proc(message);
+  UINT key = static_cast<UINT>(message.wparam) + get_modifier_keys();
+  if (message.msg == WM_KEYDOWN || message.msg == WM_SYSKEYDOWN) {
+    win32::key_event_args key_event_args(key);
+    modifier_keys_ = key_event_args.modifiers();
+    on_key_down(key_event_args);
+    message.result = key_event_args.suppress_key_press;
+    if (!key_event_args.handled) def_wnd_proc(message);
+  } else if ((message.msg == WM_CHAR || message.msg == WM_SYSCHAR) && (key > 255U || std::iscntrl(static_cast<int32_t>(key))) == 0) {
+    key_press_event_args key_press_event_args(static_cast<wchar_t>(key));
+    on_key_press(key_press_event_args);
+    message.result = key_press_event_args.handled;
+    if (!key_press_event_args.handled) def_wnd_proc(message);
+  } else if (message.msg == WM_KEYUP || message.msg == WM_SYSKEYUP) {
+    key_event_args key_event_args(key);
+    modifier_keys_ = key_event_args.modifiers();
+    on_key_up(key_event_args);
+    message.result = key_event_args.handled;
+    if (!key_event_args.handled) def_wnd_proc(message);
+  } else
+    def_wnd_proc(message);
 }
 
 void control::wm_kill_focus(message& message) {

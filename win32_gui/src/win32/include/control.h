@@ -5,6 +5,8 @@
 #include "event.h"
 #include "event_handler.h"
 #include "iwin32_window.h"
+#include "key_event_handler.h"
+#include "key_press_event_handler.h"
 #include "message.h"
 #include "string.h"
 #include <map>
@@ -110,11 +112,16 @@ namespace win32 {
 
     virtual HWND handle() const noexcept;
 
+    virtual int height() const noexcept;
+    virtual control& height(int value);
+
+    virtual int left() const noexcept;
+    virtual control& left(int value);
+
     virtual POINT location() const noexcept;
     virtual control& location(POINT value);
 
-    virtual int height() const noexcept;
-    virtual control& height(int value);
+    static UINT modifier_keys();
 
     virtual std::optional<control_ref> parent() const noexcept;
     virtual control& parent(const control& value);
@@ -128,17 +135,14 @@ namespace win32 {
     virtual const std::wstring& text() const noexcept;
     virtual control& text(std::wstring value);
 
+    virtual int top() const noexcept;
+    virtual control& top(int value);
+
     virtual bool visible() const noexcept;
     virtual control& visible(bool value) noexcept;
 
     virtual int width() const noexcept;
     virtual control& width(int value);
-
-    virtual int left() const noexcept;
-    virtual control& left(int value);
-
-    virtual int top() const noexcept;
-    virtual control& top(int value);
     /// @}
 
     /// @name Events
@@ -153,6 +157,12 @@ namespace win32 {
     event<control, event_handler> enabled_changed;
 
     event<control, event_handler> fore_color_changed;
+
+    event<control, key_event_handler> key_down;
+
+    event<control, key_press_event_handler> key_press;
+
+    event<control, key_event_handler> key_up;
 
     event<control, event_handler> location_changed;
 
@@ -260,6 +270,12 @@ namespace win32 {
 
     virtual void on_handle_destroyed(const event_args& e);
 
+    virtual void on_key_down(key_event_args& e);
+
+    virtual void on_key_press(key_press_event_args& e);
+
+    virtual void on_key_up(key_event_args& e);
+
     virtual void on_location_changed(const event_args& e);
 
     virtual void on_parent_changed(const event_args& e);
@@ -321,6 +337,7 @@ namespace win32 {
     void wm_sizing(message& message);
  
     inline static std::map<HWND, control*> handles_;
+    inline static UINT modifier_keys_ = 0;
     inline static std::vector<control_ref> top_level_controls_;
     struct data {
       HBRUSH back_brush = nullptr;

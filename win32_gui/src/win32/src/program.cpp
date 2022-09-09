@@ -82,6 +82,18 @@ int wmain(int argc, wchar_t* argv[]) {
     debug::write_line(L"Thread exit");
   };
 
+  form1.key_down += [&](control& sender, key_event_args& e) {
+    debug::write_line(string_format(L"key_down : key_data=0x%04X, modifiers=0x%04X", e.key_data, e.modifiers()));
+  };
+
+  form1.key_press += [&](control& sender, key_press_event_args& e) {
+    debug::write_line(string_format(L"key_press : key_char='%c'", e.key_char));
+  };
+
+  form1.key_up += [&](control& sender, key_event_args& e) {
+    debug::write_line(string_format(L"key_up : key_data=0x%04X, modifiers=0x%04X", e.key_data, e.modifiers()));
+  };
+
   button1.invalidate();
 
   application::run(form1);
