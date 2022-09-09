@@ -395,6 +395,57 @@ void control::destroy_handle() {
   on_handle_destroyed(event_args::empty);
 }
 
+void control::on_click(const event_args& e) {
+  click(*this, e);
+}
+
+void control::on_back_color_changed(const event_args& e) {
+  back_color_changed(*this, e);
+}
+
+void control::on_client_size_changed(const event_args& e) {
+  client_size_changed(*this, e);
+}
+
+void control::on_enabled_changed(const event_args& e) {
+  enabled_changed(*this, e);
+}
+
+void control::on_fore_color_changed(const event_args& e) {
+  fore_color_changed(*this, e);
+}
+
+void control::on_handle_created(const event_args& e) {
+  refresh();
+}
+
+void control::on_handle_destroyed(const event_args& e) {
+}
+
+void control::on_location_changed(const event_args& e) {
+  location_changed(*this, e);
+}
+
+void control::on_parent_changed(const event_args& e) {
+  parent_changed(*this, e);
+}
+
+void control::on_resize(const event_args& e) {
+  resize(*this, e);
+}
+
+void control::on_size_changed(const event_args& e) {
+  size_changed(*this, e);
+}
+
+void control::on_text_changed(const event_args& e) {
+  text_changed(*this, e);
+}
+
+void control::on_visible_changed(const event_args& e) {
+  visible_changed(*this, e);
+}
+
 void control::recreate_handle() {
   destroy_handle();
   create_handle();
@@ -488,57 +539,6 @@ void control::wnd_proc(message& message) {
   }
 }
 
-void control::on_click(const event_args& e) {
-  click(*this, e);
-}
-
-void control::on_back_color_changed(const event_args& e) {
-  back_color_changed(*this, e);
-}
-
-void control::on_client_size_changed(const event_args& e) {
-  client_size_changed(*this, e);
-}
-
-void control::on_enabled_changed(const event_args& e) {
-  enabled_changed(*this, e);
-}
-
-void control::on_fore_color_changed(const event_args& e) {
-  fore_color_changed(*this, e);
-}
-
-void control::on_handle_created(const event_args& e) {
-  refresh();
-}
-
-void control::on_handle_destroyed(const event_args& e) {
-}
-
-void control::on_location_changed(const event_args& e) {
-  location_changed(*this, e);
-}
-
-void control::on_parent_changed(const event_args& e) {
-  parent_changed(*this, e);
-}
-
-void control::on_resize(const event_args& e) {
-  resize(*this, e);
-}
-
-void control::on_size_changed(const event_args& e) {
-  size_changed(*this, e);
-}
-
-void control::on_text_changed(const event_args& e) {
-  text_changed(*this, e);
-}
-
-void control::on_visible_changed(const event_args& e) {
-  visible_changed(*this, e);
-}
-
 bool control::get_state(control::state flag) const {
   return ((int32_t)data_->state & (int32_t)flag) == (int32_t)flag;
 }
@@ -566,7 +566,6 @@ void control::wm_command(message& message) {
 }
 
 void control::wm_command_control(message& message) {
-  on_click(event_args::empty);
   def_wnd_proc(message);
 }
 
