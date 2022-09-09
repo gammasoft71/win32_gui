@@ -184,8 +184,8 @@ SIZE control::size() const noexcept {
 
 control& control::size(SIZE value) {
   bounds_specified specified = bounds_specified::none;
-  if (data_->size.cx != value.cx || data_->size.cy != value.cy) specified |= bounds_specified::width;
-  if (data_->size.cy != value.cy || data_->size.cy != value.cy) specified |= bounds_specified::height;
+  if (data_->size.cx != value.cx) specified |= bounds_specified::width;
+  if (data_->size.cy != value.cy) specified |= bounds_specified::height;
   data_->size = value;
   if (specified != bounds_specified::none) set_bound_core(left(), top(), width(), height(), specified);
   return *this;
@@ -651,7 +651,7 @@ void control::wm_key_char(message& message) {
     on_key_down(key_event_args);
     message.result = key_event_args.suppress_key_press;
     if (!key_event_args.handled) def_wnd_proc(message);
-  } else if ((message.msg == WM_CHAR || message.msg == WM_SYSCHAR) && (key > 255U || std::iscntrl(static_cast<int32_t>(key))) == 0) {
+  } else if ((message.msg == WM_CHAR || message.msg == WM_SYSCHAR) && (((key & VK_KEY_CODE_MASK) > 255U) || (std::iscntrl(static_cast<int32_t>(key & VK_KEY_CODE_MASK)))) == 0) {
     key_press_event_args key_press_event_args(static_cast<wchar_t>(key));
     on_key_press(key_press_event_args);
     message.result = key_press_event_args.handled;
