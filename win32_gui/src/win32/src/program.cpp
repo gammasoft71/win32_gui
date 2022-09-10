@@ -84,6 +84,8 @@ int wmain(int argc, wchar_t* argv[]) {
 
   form1.key_down += [&](control& sender, key_event_args& e) {
     debug::write_line(string_format(L"key_down : key_data=0x%04X, modifiers=0x%04X", e.key_data, e.modifiers()));
+    e.suppress_key_press = e.key_code() == VK_SPACE;
+    e.handled = true;
   };
 
   form1.key_press += [&](control& sender, key_press_event_args& e) {

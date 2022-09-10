@@ -649,14 +649,15 @@ void control::wm_key_char(message& message) {
     win32::key_event_args key_event_args(key);
     modifier_keys_ = key_event_args.modifiers();
     on_key_down(key_event_args);
-    message.result = key_event_args.suppress_key_press;
+    data_->suppress_key_press = key_event_args.suppress_key_press;
     if (!key_event_args.handled) def_wnd_proc(message);
-  } else if ((message.msg == WM_CHAR || message.msg == WM_SYSCHAR) && (((key & VK_KEY_CODE_MASK) > 255U) || (std::iscntrl(static_cast<int32_t>(key & VK_KEY_CODE_MASK)))) == 0) {
+  } else if ((message.msg == WM_CHAR || message.msg == WM_SYSCHAR) && data_->suppress_key_press == false && (((key & VK_KEY_CODE_MASK) > 255U) || (std::iscntrl(static_cast<int32_t>(key & VK_KEY_CODE_MASK)))) == 0) {
     key_press_event_args key_press_event_args(static_cast<wchar_t>(key));
     on_key_press(key_press_event_args);
     message.result = key_press_event_args.handled;
     if (!key_press_event_args.handled) def_wnd_proc(message);
   } else if (message.msg == WM_KEYUP || message.msg == WM_SYSKEYUP) {
+    data_->suppress_key_press = false;
     key_event_args key_event_args(key);
     modifier_keys_ = key_event_args.modifiers();
     on_key_up(key_event_args);

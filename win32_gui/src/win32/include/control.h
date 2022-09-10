@@ -353,6 +353,7 @@ namespace win32 {
       SIZE size = { CW_USEDEFAULT, CW_USEDEFAULT };
       control::state state = control::state::empty;
       DWORD style = WS_OVERLAPPED;
+      bool suppress_key_press = false;
     };
     std::shared_ptr<data> data_ = std::make_shared<data>();
   };
