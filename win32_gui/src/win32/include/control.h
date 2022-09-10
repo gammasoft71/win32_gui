@@ -165,6 +165,8 @@ namespace win32 {
 
     event<control, event_handler> fore_color_changed;
 
+    event<control, event_handler> get_focus;
+
     event<control, help_event_handler> help_requested;
 
     event<control, key_event_handler> key_down;
@@ -316,6 +318,8 @@ namespace win32 {
     virtual void on_enabled_changed(const event_args& e);
 
     virtual void on_fore_color_changed(const event_args& e);
+
+    virtual void on_get_focus(const event_args& e);
 
     virtual void on_handle_created(const event_args& e);
 

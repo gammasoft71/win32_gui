@@ -474,6 +474,10 @@ void control::on_fore_color_changed(const event_args& e) {
   fore_color_changed(*this, e);
 }
 
+void control::on_get_focus(const event_args& e) {
+  get_focus(*this, e);
+}
+
 void control::on_handle_created(const event_args& e) {
   refresh();
 }
@@ -843,6 +847,9 @@ void control::wm_mouse_up(message& message) {
 
 void control::wm_mouse_wheel(message& message) {
   def_wnd_proc(message);
+  def_wnd_proc(message);
+  if (message.msg == WM_MOUSEHWHEEL) on_mouse_horizontal_wheel(mouse_event_args{ to_mouse_buttons(message), get_state(state::double_click_fired) ? 2 : 1, POINT {}, static_cast<INT32>(HIWORD(message.wparam)) });
+  else on_mouse_wheel(mouse_event_args{ to_mouse_buttons(message), get_state(state::double_click_fired) ? 2 : 1, POINT {}, static_cast<INT32>(HIWORD(message.wparam)) });
 }
 
 void control::wm_move(message& message) {
@@ -873,6 +880,8 @@ void control::wm_scroll_control(message& message) {
 
 void control::wm_set_focus(message& message) {
   def_wnd_proc(message);
+  data_->focused = true;
+  on_get_focus(event_args::empty);
 }
 
 void control::wm_set_text(message& message) {
