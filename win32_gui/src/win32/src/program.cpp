@@ -96,6 +96,26 @@ int wmain(int argc, wchar_t* argv[]) {
     debug::write_line(string_format(L"key_up : key_data=0x%04X, modifiers=0x%04X", e.key_data, e.modifiers()));
   };
 
+  form1.mouse_click += [&](control& sender, const mouse_event_args& e) {
+    debug::write_line(string_format(L"mouse_click : button=0x%08X, clicks=%d, location={x=%d, y=%d}", e.button, e.clicks, e.x, e.y));
+  };
+
+  form1.mouse_double_click += [&](control& sender, const mouse_event_args& e) {
+    debug::write_line(string_format(L"mouse_double_click : button=0x%08X, clicks=%d, location={x=%d, y=%d}", e.button, e.clicks, e.x, e.y));
+  };
+
+  form1.mouse_down += [&](control& sender, const mouse_event_args& e) {
+    debug::write_line(string_format(L"mouse_down : button=0x%08X, clicks=%d, location={x=%d, y=%d}", e.button, e.clicks, e.x, e.y));
+  };
+
+  form1.mouse_move += [&](control& sender, const mouse_event_args& e) {
+    debug::write_line(string_format(L"mouse_move : location={x=%d, y=%d}", e.x, e.y));
+  };
+
+  form1.mouse_up += [&](control& sender, const mouse_event_args& e) {
+    debug::write_line(string_format(L"mouse_up : button=0x%08X, clicks=%d, location={x=%d, y=%d}", e.button, e.clicks, e.x, e.y));
+  };
+
   button1.invalidate();
 
   application::run(form1);

@@ -8,6 +8,7 @@ set(INCLUDES
   src/win32/include/button.h
   src/win32/include/color.h
   src/win32/include/control.h
+  src/win32/include/control_styles.h
   src/win32/include/create_params.h
   src/win32/include/dark_mode.h
   src/win32/include/debug.h
@@ -18,6 +19,8 @@ set(INCLUDES
   src/win32/include/event_handler.h
   src/win32/include/form.h
   src/win32/include/forms.h
+  src/win32/include/help_event_args.h
+  src/win32/include/help_event_handler.h
   src/win32/include/iwin32_window.h
   src/win32/include/key_event_args.h
   src/win32/include/key_event_handler.h
@@ -25,6 +28,9 @@ set(INCLUDES
   src/win32/include/key_press_event_handler.h
   src/win32/include/label.h
   src/win32/include/message.h
+  src/win32/include/mouse_buttons.h
+  src/win32/include/mouse_event_args.h
+  src/win32/include/mouse_event_handler.h
   src/win32/include/string.h
   src/win32/include/system_colors.h
   src/win32/include/virtual_key_codes.h

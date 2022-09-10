@@ -8,10 +8,46 @@
 using namespace std;
 using namespace win32;
 
+namespace {
+  UINT get_modifier_keys() {
+    UINT modifier_keys = 0;
+    modifier_keys |= ((GetKeyState(VK_ALT) & 0x0100) == 0x0100 ? VK_ALT_MODIFIER : 0);
+    modifier_keys |= ((GetKeyState(VK_CONTROL) & 0x0100) == 0x0100 ? VK_CONTROL_MODIFIER : 0);
+    modifier_keys |= ((GetKeyState(VK_LCONTROL) & 0x0100) == 0x0100 ? VK_CONTROL_MODIFIER : 0);
+    modifier_keys |= ((GetKeyState(VK_RCONTROL) & 0x0100) == 0x0100 ? VK_CONTROL_MODIFIER : 0);
+    modifier_keys |= ((GetKeyState(VK_SHIFT) & 0x0100) == 0x0100 ? VK_SHIFT_MODIFIER : 0);
+    modifier_keys |= ((GetKeyState(VK_LSHIFT) & 0x0100) == 0x0100 ? VK_SHIFT_MODIFIER : 0);
+    modifier_keys |= ((GetKeyState(VK_RSHIFT) & 0x0100) == 0x0100 ? VK_SHIFT_MODIFIER : 0);
+    modifier_keys |= ((GetKeyState(VK_LWIN) & 0x0100) == 0x0100 ? VK_META_MODIFIER : 0);
+    modifier_keys |= ((GetKeyState(VK_RWIN) & 0x0100) == 0x0100 ? VK_META_MODIFIER : 0);
+    return modifier_keys;
+  }
+  static mouse_buttons to_mouse_buttons(const message& message) {
+    if (message.msg == WM_LBUTTONDBLCLK || message.msg == WM_LBUTTONDOWN || message.msg == WM_LBUTTONUP) return mouse_buttons::left;
+    if (message.msg == WM_RBUTTONDBLCLK || message.msg == WM_RBUTTONDOWN || message.msg == WM_RBUTTONUP) return mouse_buttons::right;
+    if (message.msg == WM_MBUTTONDBLCLK || message.msg == WM_MBUTTONDOWN || message.msg == WM_MBUTTONUP) return mouse_buttons::middle;
+    if ((message.wparam & MK_XBUTTON1) == MK_XBUTTON1 && (message.msg == WM_XBUTTONDBLCLK || message.msg == WM_XBUTTONDOWN || message.msg == WM_XBUTTONUP)) return mouse_buttons::x_button1;
+    if ((message.wparam & MK_XBUTTON2) == MK_XBUTTON2 && (message.msg == WM_XBUTTONDBLCLK || message.msg == WM_XBUTTONDOWN || message.msg == WM_XBUTTONUP)) return mouse_buttons::x_button2;
+    return mouse_buttons::none;
+  }
+
+  static mouse_buttons wparam_to_mouse_buttons(const message& message) {
+    if ((message.wparam & MK_LBUTTON) == MK_LBUTTON)
+      return mouse_buttons::left;
+    else if ((message.wparam & MK_RBUTTON) == MK_RBUTTON)
+      return mouse_buttons::right;
+    else if ((message.wparam & MK_MBUTTON) == MK_MBUTTON)
+      return mouse_buttons::middle;
+    return mouse_buttons::none;
+  }
+
+}
+
 control::control() {
   set_state(state::enabled, true);
   set_state(state::visible, true);
   set_state(state::tab_stop, true);
+  set_style(control_styles::all_painting_in_wm_paint | control_styles::user_paint | control_styles::standard_click | control_styles::standard_double_click | control_styles::use_text_for_accessibility | control_styles::selectable, true);
 }
 
 control::~control() {
@@ -57,7 +93,7 @@ control& control::client_size(SIZE value) {
   if (data_->size.cx == value.cx && data_->size.cy == value.cy) return *this;
   RECT rect = client_rectangle();
   RECT adjusted_rect = { 0, 0, value.cx, value.cy };
-  if (style() != WS_OVERLAPPED) AdjustWindowRectEx(&adjusted_rect, style(), false, data_->ex_style);
+  if (window_style() != WS_OVERLAPPED) AdjustWindowRectEx(&adjusted_rect, window_style(), false, window_ex_style());
   bounds_specified specified = bounds_specified::none;
   if (rect.right != adjusted_rect.right) specified |= bounds_specified::width;
   if (rect.bottom != adjusted_rect.bottom) specified |= bounds_specified::height;
@@ -77,6 +113,10 @@ control& control::enabled(bool value) {
   set_state(state::enabled, value);
   on_enabled_changed(event_args::empty);
   return *this;
+}
+
+bool control::focused() const noexcept {
+  return data_->focused;
 }
 
 COLORREF control::fore_color() const noexcept {
@@ -354,12 +394,12 @@ SIZE control::default_size() const noexcept {
   return { 0, 0 }; 
 }
 
-DWORD control::ex_style() const {
-  return data_->ex_style;
+DWORD control::window_ex_style() const {
+  return data_->window_ex_style;
 }
 
-DWORD control::style() const {
-  return data_->style;
+DWORD control::window_style() const {
+  return data_->window_style;
 }
 
 void control::create_handle() {
@@ -375,8 +415,8 @@ void control::create_handle() {
     cp.width = default_size().cx;
     data_->size.cx = cp.width;
   }
-  data_->ex_style = cp.ex_style;
-  data_->style = cp.style;
+  data_->window_ex_style = cp.ex_style;
+  data_->window_style = cp.style;
   data_->handle = CreateWindowEx(cp.ex_style, cp.class_name, cp.text, cp.style, cp.x, cp.y, cp.width, cp.height, cp.parent, nullptr, nullptr, nullptr);
   data_->def_wnd_proc = reinterpret_cast<WNDPROC>(SetWindowLongPtr(data_->handle, GWLP_WNDPROC, reinterpret_cast<LONG_PTR>(wnd_proc_)));
   handles_[data_->handle] = this;
@@ -400,16 +440,30 @@ void control::destroy_handle() {
   on_handle_destroyed(event_args::empty);
 }
 
-void control::on_click(const event_args& e) {
-  click(*this, e);
+bool control::get_style(control_styles flag) const {
+  return ((int32_t)data_->style & (int32_t)flag) == (int32_t)flag;
 }
 
 void control::on_back_color_changed(const event_args& e) {
   back_color_changed(*this, e);
 }
 
+void control::on_click(const event_args& e) {
+  click(*this, e);
+}
+
 void control::on_client_size_changed(const event_args& e) {
   client_size_changed(*this, e);
+}
+
+void control::on_create_control() {
+}
+
+void control::on_destroy_control() {
+}
+
+void control::on_double_click(const event_args& e) {
+  double_click(*this, e);
 }
 
 void control::on_enabled_changed(const event_args& e) {
@@ -428,6 +482,10 @@ void control::on_handle_destroyed(const event_args& e) {
 
 }
 
+void control::on_help_requested(help_event_args& e) {
+  help_requested(*this, e);
+}
+
 void control::on_key_down(key_event_args& e) {
   key_down(*this, e);
 }
@@ -442,6 +500,46 @@ void control::on_key_up(key_event_args& e) {
 
 void control::on_location_changed(const event_args& e) {
   location_changed(*this, e);
+}
+
+void control::on_lost_focus(const event_args& e) {
+  lost_focus(*this, e);
+}
+
+void control::on_mouse_click(const mouse_event_args& e) {
+  mouse_click(*this, e);
+}
+
+void control::on_mouse_double_click(const mouse_event_args& e) {
+  mouse_double_click(*this, e);
+}
+
+void control::on_mouse_down(const mouse_event_args& e) {
+  mouse_down(*this, e);
+}
+
+void control::on_mouse_enter(const event_args& e) {
+  mouse_enter(*this, e);
+}
+
+void control::on_mouse_horizontal_wheel(const mouse_event_args& e) {
+  mouse_horizontal_wheel(*this, e);
+}
+
+void control::on_mouse_leave(const event_args& e) {
+  mouse_leave(*this, e);
+}
+
+void control::on_mouse_move(const mouse_event_args& e) {
+  mouse_move(*this, e);
+}
+
+void control::on_mouse_up(const mouse_event_args& e) {
+  mouse_up(*this, e);
+}
+
+void control::on_mouse_wheel(const mouse_event_args& e) {
+  mouse_wheel(*this, e);
 }
 
 void control::on_parent_changed(const event_args& e) {
@@ -464,6 +562,18 @@ void control::on_visible_changed(const event_args& e) {
   visible_changed(*this, e);
 }
 
+POINT control::point_to_client(const POINT& p) const {
+  POINT result = p;
+  ScreenToClient(handle(), &result);
+  return result;
+}
+
+POINT control::point_to_screen(const POINT& p) const {
+  POINT result = p;
+  ClientToScreen(handle(), &result);
+  return result;
+}
+
 void control::recreate_handle() {
   destroy_handle();
   create_handle();
@@ -483,6 +593,10 @@ void control::set_bound_core(int x, int y, int width, int height, bounds_specifi
     on_size_changed(event_args::empty);
     on_resize(event_args::empty);
   }
+}
+
+void control::set_style(control_styles flag, bool value) {
+  data_->style = value ? (control_styles)((int32_t)data_->style | (int32_t)flag) : (control_styles)((int32_t)data_->style & ~(int32_t)flag);
 }
 
 void control::wnd_proc(message& message) {
@@ -531,6 +645,7 @@ void control::wnd_proc(message& message) {
   case WM_CHILDACTIVATE: wm_child_activate(message); break;
   case WM_COMMAND: wm_command(message); break;
   case WM_CREATE: wm_create(message); break;
+  case WM_DESTROY: wm_destroy(message); break;
   case WM_HELP: wm_help(message); break;
   case WM_MENUCOMMAND: wm_menu_command(message); break;
   case WM_MOVE: wm_move(message);  break;
@@ -585,6 +700,8 @@ void control::wm_command(message& message) {
 
 void control::wm_command_control(message& message) {
   def_wnd_proc(message);
+  if (HIWORD(message.wparam) == BN_CLICKED)
+    on_click(event_args::empty);
 }
 
 void control::wm_ctlcolor(message& message) {
@@ -594,7 +711,6 @@ void control::wm_ctlcolor(message& message) {
 
 void control::wm_ctlcolor_control(message& message) {
   HDC hdc = reinterpret_cast<HDC>(message.wparam);
-  //debug::write_line(string_format(L"%p - wm_ctlcolorstatic - back color {0x%06X}", handle(), back_color()));
   SetBkMode(hdc, TRANSPARENT);
   SetTextColor(hdc, fore_color());
   SetBkColor(hdc, back_color());
@@ -605,6 +721,12 @@ void control::wm_ctlcolor_control(message& message) {
 
 void control::wm_create(message& message) {
   def_wnd_proc(message);
+  on_create_control();
+}
+
+void control::wm_destroy(message& message) {
+  def_wnd_proc(message);
+  on_destroy_control();
 }
 
 void control::wm_enter_idle(message& message) {
@@ -617,7 +739,7 @@ void control::wm_drop_files(message& message) {
 
 void control::wm_erasebkgnd(message& message) {
   HDC hdc = reinterpret_cast<HDC>(message.wparam);
-  RECT rect = client_rectangle(); /// @todo findd best mthod to get rect.
+  RECT rect = client_rectangle(); /// @todo findd best method to get rect.
   HBRUSH brush = CreateSolidBrush(back_color());
   FillRect(hdc, &rect, brush);
   DeleteObject(brush);
@@ -625,22 +747,10 @@ void control::wm_erasebkgnd(message& message) {
 
 void control::wm_help(message& message) {
   def_wnd_proc(message);
-}
-
-namespace {
-  UINT get_modifier_keys() {
-    UINT modifier_keys = 0;
-    modifier_keys |= ((GetKeyState(VK_ALT) & 0x0100) == 0x0100 ? VK_ALT_MODIFIER : 0);
-    modifier_keys |= ((GetKeyState(VK_CONTROL) & 0x0100) == 0x0100 ? VK_CONTROL_MODIFIER : 0);
-    modifier_keys |= ((GetKeyState(VK_LCONTROL) & 0x0100) == 0x0100 ? VK_CONTROL_MODIFIER : 0);
-    modifier_keys |= ((GetKeyState(VK_RCONTROL) & 0x0100) == 0x0100 ? VK_CONTROL_MODIFIER : 0);
-    modifier_keys |= ((GetKeyState(VK_SHIFT) & 0x0100) == 0x0100 ? VK_SHIFT_MODIFIER : 0);
-    modifier_keys |= ((GetKeyState(VK_LSHIFT) & 0x0100) == 0x0100 ? VK_SHIFT_MODIFIER : 0);
-    modifier_keys |= ((GetKeyState(VK_RSHIFT) & 0x0100) == 0x0100 ? VK_SHIFT_MODIFIER : 0);
-    modifier_keys |= ((GetKeyState(VK_LWIN) & 0x0100) == 0x0100 ? VK_META_MODIFIER : 0);
-    modifier_keys |= ((GetKeyState(VK_RWIN) & 0x0100) == 0x0100 ? VK_META_MODIFIER : 0);
-    return modifier_keys;
-  }
+  HELPINFO* help_info = reinterpret_cast<HELPINFO*>(message.lparam);
+  help_event_args e {POINT {help_info->MousePos.x, help_info->MousePos.y}};
+  on_help_requested(e);
+  if (!e.handled) def_wnd_proc(message);
 }
 
 void control::wm_key_char(message& message) {
@@ -669,6 +779,8 @@ void control::wm_key_char(message& message) {
 
 void control::wm_kill_focus(message& message) {
   def_wnd_proc(message);
+  data_->focused = false;
+  on_lost_focus(event_args::empty);
 }
 
 void control::wm_menu_command(message& message) {
@@ -676,27 +788,57 @@ void control::wm_menu_command(message& message) {
 }
 
 void control::wm_mouse_down(message& message) {
+  set_state(control::state::double_click_fired, message.msg == WM_LBUTTONDBLCLK || message.msg == WM_RBUTTONDBLCLK || message.msg == WM_MBUTTONDBLCLK || message.msg == WM_XBUTTONDBLCLK);
+  mouse_event_args e{ to_mouse_buttons(message), get_state(state::double_click_fired) ? 2 : 1, POINT {GET_X_LPARAM(message.lparam), GET_Y_LPARAM(message.lparam)}, 0 };
+  mouse_buttons_ |= e.button;
   def_wnd_proc(message);
+  on_mouse_down(e);
 }
 
 void control::wm_mouse_double_click(message& message) {
   def_wnd_proc(message);
+  set_state(control::state::double_click_fired, message.msg == WM_LBUTTONDBLCLK || message.msg == WM_RBUTTONDBLCLK || message.msg == WM_MBUTTONDBLCLK || message.msg == WM_XBUTTONDBLCLK);
+
+  if (get_state(control::state::double_click_fired) && get_style(control_styles::standard_double_click))
+    on_double_click(event_args::empty);
+  mouse_event_args e{ to_mouse_buttons(message), get_state(state::double_click_fired) ? 2 : 1, POINT {GET_X_LPARAM(message.lparam), GET_Y_LPARAM(message.lparam)}, 0 };
+  on_mouse_double_click(e);
 }
 
 void control::wm_mouse_enter(message& message) {
   def_wnd_proc(message);
+  data_->mouse_in = true;
+  on_mouse_enter(event_args::empty);
 }
 
 void control::wm_mouse_leave(message& message) {
   def_wnd_proc(message);
+  data_->mouse_in = false;
+  on_mouse_leave(event_args::empty);
 }
 
 void control::wm_mouse_move(message& message) {
   def_wnd_proc(message);
+  mouse_event_args e = mouse_event_args(wparam_to_mouse_buttons(message), get_state(control::state::double_click_fired) ? 2 : 1, POINT { GET_X_LPARAM(message.lparam), GET_Y_LPARAM(message.lparam) }, 0);
+  // Workaround : sometimes mouse enter and/or mouse leave message are not send
+  // For example on macos when mouse down in control and mouse is moved out then moved in, the mouse enter message is not send...
+  // The two followed line fixed it
+  if (!data_->mouse_in && PtInRect(&client_rectangle(), e.location()))
+    wm_mouse_enter(message);
+  else if (data_->mouse_in && !PtInRect(&client_rectangle(), e.location()))
+    wm_mouse_leave(message);
+  on_mouse_move(e);
 }
 
 void control::wm_mouse_up(message& message) {
   def_wnd_proc(message);
+  mouse_event_args e{ to_mouse_buttons(message), 1, POINT {GET_X_LPARAM(message.lparam), GET_Y_LPARAM(message.lparam)}, 0 };
+  mouse_buttons_ &= ~e.button;
+  if (PtInRect(&client_rectangle(), e.location()) && get_style(control_styles::standard_click)) {
+    on_click(event_args::empty);
+    on_mouse_click(e);
+  }
+  on_mouse_up(e);
 }
 
 void control::wm_mouse_wheel(message& message) {

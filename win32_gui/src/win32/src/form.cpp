@@ -17,7 +17,7 @@ void form::activate() {
 control& form::client_size(SIZE value) {
   RECT rect = client_rectangle();
   RECT adjusted_rect = {0, 0, value.cx, value.cy};
-  if (style() != WS_OVERLAPPED) AdjustWindowRectEx(&adjusted_rect, style(), data_->main_menu != nullptr, ex_style());
+  if (window_style() != WS_OVERLAPPED) AdjustWindowRectEx(&adjusted_rect, window_style(), data_->main_menu != nullptr, window_ex_style());
   bounds_specified specified = bounds_specified::none;
   if (rect.right != adjusted_rect.right) specified |= bounds_specified::width;
   if (rect.bottom != adjusted_rect.bottom) specified |= bounds_specified::height;

@@ -16,7 +16,7 @@ namespace win32 {
     /// @{
     /// @brief Initializes a new instance of the button class.
     /// @remarks By default the button displays no caption. To specify the caption text, set the text property.
-    button() = default;
+    button();
     /// @}
 
     /// @name Properties
@@ -41,15 +41,7 @@ namespace win32 {
     SIZE default_size() const noexcept override;
     /// @}
 
-    /// @name Protected Methods
-
-    /// @{
-    void wnd_proc(message& message) override;
-    /// @}
-
   private:
-    void wm_command_control(win32::message& message);
-
     struct data {
       win32::dialog_result dialog_result = win32::dialog_result::none;
     };

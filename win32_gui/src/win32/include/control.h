@@ -1,13 +1,16 @@
 #pragma once
 #include "bounds_specified.h"
 #include "color.h"
+#include "control_styles.h"
 #include "create_params.h"
 #include "event.h"
 #include "event_handler.h"
+#include "help_event_handler.h"
 #include "iwin32_window.h"
 #include "key_event_handler.h"
 #include "key_press_event_handler.h"
 #include "message.h"
+#include "mouse_event_handler.h"
 #include "string.h"
 #include <map>
 #include <optional>
@@ -106,6 +109,8 @@ namespace win32 {
     virtual bool enabled() const noexcept;
     virtual control& enabled(bool value);
 
+    bool focused() const noexcept;
+
     virtual COLORREF fore_color() const noexcept;
     virtual control& fore_color(COLORREF value);
     virtual control& fore_color(nullptr_t value);
@@ -154,9 +159,13 @@ namespace win32 {
 
     event<control, event_handler> client_size_changed;
 
+    event<control, event_handler> double_click;
+
     event<control, event_handler> enabled_changed;
 
     event<control, event_handler> fore_color_changed;
+
+    event<control, help_event_handler> help_requested;
 
     event<control, key_event_handler> key_down;
 
@@ -165,6 +174,26 @@ namespace win32 {
     event<control, key_event_handler> key_up;
 
     event<control, event_handler> location_changed;
+
+    event<control, event_handler> lost_focus;
+
+    event<control, mouse_event_handler> mouse_click;
+
+    event<control, mouse_event_handler> mouse_double_click;
+
+    event<control, mouse_event_handler> mouse_down;
+
+    event<control, event_handler> mouse_enter;
+
+    event<control, mouse_event_handler> mouse_horizontal_wheel;
+
+    event<control, event_handler> mouse_leave;
+
+    event<control, mouse_event_handler> mouse_move;
+
+    event<control, mouse_event_handler> mouse_up;
+
+    event<control, mouse_event_handler> mouse_wheel;
 
     event<control, event_handler> parent_changed;
 
@@ -222,6 +251,16 @@ namespace win32 {
 
     bool is_handle_created() const noexcept;
 
+    /// @brief Computes the location of the specified screen point into client coordinates.
+    /// @param p The screen coordinate xtd::drawing::point to convert.
+    /// @return A xtd::drawing::point that represents the converted xtd::drawing::point, p, in client coordinates.
+    POINT point_to_client(const POINT& p) const;
+
+    /// @brief Computes the location of the specified client point into screen coordinates.
+    /// @param p The client coordinate  xtd::drawing::point to convert.
+    /// @return A xtd::drawing::point that represents the converted  xtd::drawing::point, p, in screen coordinates.
+    POINT point_to_screen(const POINT& p) const;
+
     virtual void refresh() const;
 
     void show();
@@ -242,8 +281,8 @@ namespace win32 {
 
     virtual SIZE default_size() const noexcept;
 
-    DWORD ex_style() const;
-    DWORD style() const;
+    DWORD window_ex_style() const;
+    DWORD window_style() const;
 
     /// @}
 
@@ -256,11 +295,23 @@ namespace win32 {
 
     void destroy_handle();
 
+    /// @brief Retrieves the value of the specified control style bit for the control.
+    /// @param flag The control_styles bit to return the value from.
+    /// @return true if the specified control style bit is set to true; otherwise, false.
+    /// @remarks Control style bit flags are used to categorize supported behavior. A control can enable a style by calling the set_style method and passing in the appropriate control_styles bit and the bool value to set the bit to. To determine the value assigned to a specified control_styles bit, use the get_style method and pass in the control_styles member to evaluate.
+    bool get_style(control_styles flag) const;
+
+    virtual void on_back_color_changed(const event_args& e);
+
     virtual void on_click(const event_args& e);
 
     virtual void on_client_size_changed(const event_args& e);
 
-    virtual void on_back_color_changed(const event_args& e);
+    virtual void on_create_control();
+
+    virtual void on_destroy_control();
+
+    virtual void on_double_click(const event_args& e);
 
     virtual void on_enabled_changed(const event_args& e);
 
@@ -270,6 +321,8 @@ namespace win32 {
 
     virtual void on_handle_destroyed(const event_args& e);
 
+    virtual void on_help_requested(help_event_args& e);
+
     virtual void on_key_down(key_event_args& e);
 
     virtual void on_key_press(key_press_event_args& e);
@@ -277,6 +330,26 @@ namespace win32 {
     virtual void on_key_up(key_event_args& e);
 
     virtual void on_location_changed(const event_args& e);
+
+    virtual void on_lost_focus(const event_args& e);
+
+    virtual void on_mouse_click(const mouse_event_args& e);
+
+    virtual void on_mouse_double_click(const mouse_event_args& e);
+
+    virtual void on_mouse_down(const mouse_event_args& e);
+
+    virtual void on_mouse_enter(const event_args& e);
+
+    virtual void on_mouse_horizontal_wheel(const mouse_event_args& e);
+
+    virtual void on_mouse_leave(const event_args& e);
+
+    virtual void on_mouse_move(const mouse_event_args& e);
+
+    virtual void on_mouse_up(const mouse_event_args& e);
+
+    virtual void on_mouse_wheel(const mouse_event_args& e);
 
     virtual void on_parent_changed(const event_args& e);
 
@@ -294,6 +367,13 @@ namespace win32 {
 
     void set_bound_core(int x, int y, int width, int height, bounds_specified specified);
 
+    /// @brief Sets a specified control_styles flag to either true or false.
+    /// @param flag The control_styles bit to set.
+    /// @param value true to apply the specified style to the control; otherwise, false.
+    /// @remarks Control style bit flags are used to categorize supported behavior. A control can enable a style by calling the set_style method and passing in the appropriate control_styles bit (or bits) and the bool value to set the bit(s) to. To determine the value assigned to a specified control_styles bit, use the get_style method and pass in the control_styles member to evaluate.
+    /// @warning Setting the control style bits can substantially change the behavior of the control. Review the control_styles enumeration documentation to understand the effects of changing the control style bits before calling the set_style method.
+    void set_style(control_styles flag, bool value);
+
     virtual void wnd_proc(message& message);
     /// @}
 
@@ -310,6 +390,7 @@ namespace win32 {
     void wm_ctlcolor(message& message);
     void wm_ctlcolor_control(message& message);
     void wm_create(message& message);
+    void wm_destroy(message& message);
     void wm_drop_files(message& message);
     void wm_enter_idle(message& message);
     void wm_erasebkgnd(message& message);
@@ -338,21 +419,25 @@ namespace win32 {
  
     inline static std::map<HWND, control*> handles_;
     inline static UINT modifier_keys_ = 0;
+    inline static mouse_buttons mouse_buttons_;
     inline static std::vector<control_ref> top_level_controls_;
     struct data {
       HBRUSH back_brush = nullptr;
       std::optional<COLORREF> back_color;
       std::vector<control_ref> controls;
       WNDPROC def_wnd_proc = nullptr;
-      DWORD ex_style = 0;
+      bool focused = false;
       std::optional<COLORREF> fore_color;
       mutable HWND handle = nullptr;
       HWND parent = nullptr;
       std::wstring text;
       POINT location = { CW_USEDEFAULT, CW_USEDEFAULT };
+      bool mouse_in = false;
       SIZE size = { CW_USEDEFAULT, CW_USEDEFAULT };
       control::state state = control::state::empty;
-      DWORD style = WS_OVERLAPPED;
+      control_styles style = control_styles::none;
+      DWORD window_ex_style = 0;
+      DWORD window_style = WS_OVERLAPPED;
       bool suppress_key_press = false;
     };
     std::shared_ptr<data> data_ = std::make_shared<data>();
