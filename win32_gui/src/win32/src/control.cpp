@@ -494,7 +494,9 @@ void control::wnd_proc(message& message) {
   case WM_SYSCHAR:
   case WM_SYSKEYDOWN:
   case WM_SYSKEYUP: wm_key_char(message); break;
-  // Mouse events
+  case WM_KILLFOCUS: wm_kill_focus(message); break;
+  case WM_SETFOCUS: wm_set_focus(message); break;
+    // Mouse events
   case WM_LBUTTONDOWN:
   case WM_MBUTTONDOWN:
   case WM_RBUTTONDOWN:
@@ -530,12 +532,10 @@ void control::wnd_proc(message& message) {
   case WM_COMMAND: wm_command(message); break;
   case WM_CREATE: wm_create(message); break;
   case WM_HELP: wm_help(message); break;
-  case WM_KILLFOCUS: wm_kill_focus(message); break;
   case WM_MENUCOMMAND: wm_menu_command(message); break;
   case WM_MOVE: wm_move(message);  break;
   case WM_NOTIFY: wm_notify(message); break;
   case WM_PAINT: wm_paint(message); break;
-  case WM_SETFOCUS: wm_set_focus(message); break;
   case WM_SETTEXT: wm_set_text(message); break;
   case WM_SHOWWINDOW: wm_show(message); break;
   case WM_SIZE: wm_size(message); break;
@@ -631,8 +631,6 @@ namespace {
   UINT get_modifier_keys() {
     UINT modifier_keys = 0;
     modifier_keys |= ((GetKeyState(VK_ALT) & 0x0100) == 0x0100 ? VK_ALT_MODIFIER : 0);
-    modifier_keys |= ((GetKeyState(VK_LALT) & 0x0100) == 0x0100 ? VK_ALT_MODIFIER : 0);
-    modifier_keys |= ((GetKeyState(VK_RALT) & 0x0100) == 0x0100 ? VK_ALT_MODIFIER : 0);
     modifier_keys |= ((GetKeyState(VK_CONTROL) & 0x0100) == 0x0100 ? VK_CONTROL_MODIFIER : 0);
     modifier_keys |= ((GetKeyState(VK_LCONTROL) & 0x0100) == 0x0100 ? VK_CONTROL_MODIFIER : 0);
     modifier_keys |= ((GetKeyState(VK_RCONTROL) & 0x0100) == 0x0100 ? VK_CONTROL_MODIFIER : 0);
