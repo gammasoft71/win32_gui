@@ -2,55 +2,76 @@ cmake_minimum_required(VERSION 3.8)
 
 # Project
 project(win32_gui VERSION 1.0.0)
-set(INCLUDES
-  src/win32/include/application.h
-  src/win32/include/bounds_specified.h
-  src/win32/include/button.h
-  src/win32/include/color.h
-  src/win32/include/control.h
-  src/win32/include/control_styles.h
-  src/win32/include/create_params.h
-  src/win32/include/dark_mode.h
-  src/win32/include/debug.h
-  src/win32/include/delegate.h
-  src/win32/include/dialog_result.h
-  src/win32/include/event.h
-  src/win32/include/event_args.h
-  src/win32/include/event_handler.h
-  src/win32/include/form.h
-  src/win32/include/forms.h
-  src/win32/include/help_event_args.h
-  src/win32/include/help_event_handler.h
-  src/win32/include/iwin32_window.h
-  src/win32/include/key_event_args.h
-  src/win32/include/key_event_handler.h
-  src/win32/include/key_press_event_args.h
-  src/win32/include/key_press_event_handler.h
-  src/win32/include/label.h
-  src/win32/include/message.h
-  src/win32/include/mouse_buttons.h
-  src/win32/include/mouse_event_args.h
-  src/win32/include/mouse_event_handler.h
-  src/win32/include/string.h
-  src/win32/include/system_colors.h
-  src/win32/include/virtual_key_codes.h
-  src/win32/include/window_messages.h
+set(WIN32_INCLUDES
+  src/win32_gui/include/win32/delegate.h
+  src/win32_gui/include/win32/event.h
+  src/win32_gui/include/win32/event_args.h
+  src/win32_gui/include/win32/event_handler.h
+  src/win32_gui/include/win32/forms.h
+  src/win32_gui/include/win32/string.h
 )
-set(SOURCES
-  src/win32/src/application.cpp
-  src/win32/src/button.cpp
-  src/win32/src/color.cpp
-  src/win32/src/control.cpp
-  src/win32/src/dark_mode.cpp
-  src/win32/src/debug.cpp
-  src/win32/src/form.cpp
-  src/win32/src/label.cpp
-  src/win32/src/system_colors.cpp
- 
-  src/win32/src/Program.cpp
+set(WIN32_DIAGNOSTICS_INCLUDES
+  src/win32_gui/include/win32/diagnostics/debug.h
 )
-source_group(src/win32/include FILES ${INCLUDES})
-source_group(src/win32/src FILES ${SOURCES})
+
+set(WIN32_DRAWING_INCLUDES
+  src/win32_gui/include/win32/drawing/color.h
+  src/win32_gui/include/win32/drawing/system_colors.h
+)
+set(WIN32_FORMS_INCLUDES
+  src/win32_gui/include/win32/forms/application.h
+  src/win32_gui/include/win32/forms/bounds_specified.h
+  src/win32_gui/include/win32/forms/button.h
+  src/win32_gui/include/win32/forms/control.h
+  src/win32_gui/include/win32/forms/control_styles.h
+  src/win32_gui/include/win32/forms/create_params.h
+  src/win32_gui/include/win32/forms/dark_mode.h
+  src/win32_gui/include/win32/forms/dialog_result.h
+  src/win32_gui/include/win32/forms/form.h
+  src/win32_gui/include/win32/forms/help_event_args.h
+  src/win32_gui/include/win32/forms/help_event_handler.h
+  src/win32_gui/include/win32/forms/iwin32_window.h
+  src/win32_gui/include/win32/forms/key_event_args.h
+  src/win32_gui/include/win32/forms/key_event_handler.h
+  src/win32_gui/include/win32/forms/key_press_event_args.h
+  src/win32_gui/include/win32/forms/key_press_event_handler.h
+  src/win32_gui/include/win32/forms/label.h
+  src/win32_gui/include/win32/forms/message.h
+  src/win32_gui/include/win32/forms/mouse_buttons.h
+  src/win32_gui/include/win32/forms/mouse_event_args.h
+  src/win32_gui/include/win32/forms/mouse_event_handler.h
+  src/win32_gui/include/win32/forms/virtual_key_codes.h
+  src/win32_gui/include/win32/forms/window_messages.h
+)
+set(WIN32_SOURCES
+)
+set(WIN32_DIAGNOSTICS_SOURCES
+  src/win32_gui/src/win32/diagnostics/debug.cpp
+)
+set(WIN32_DRAWING_SOURCES
+  src/win32_gui/src/win32/drawing/color.cpp
+  src/win32_gui/src/win32/drawing/system_colors.cpp
+)
+set(WIN32_FORMS_SOURCES
+  src/win32_gui/src/win32/forms/application.cpp
+  src/win32_gui/src/win32/forms/button.cpp
+  src/win32_gui/src/win32/forms/control.cpp
+  src/win32_gui/src/win32/forms/dark_mode.cpp
+  src/win32_gui/src/win32/forms/form.cpp
+  src/win32_gui/src/win32/forms/label.cpp
+)
+set(SOURCES 
+  src/win32_gui/src/Program.cpp
+)
+source_group(src/win32_gui/include/win32 FILES ${WIN32_INCLUDES})
+source_group(src/win32_gui/include/win32/diagnostics FILES ${WIN32_DIAGNOSTICS_INCLUDES})
+source_group(src/win32_gui/include/win32/drawing FILES ${WIN32_DRAWING_INCLUDES})
+source_group(src/win32_gui/include/win32/forms FILES ${WIN32_FORMS_INCLUDES})
+source_group(src/win32_gui/src/win32 FILES ${SWIN32_SOURCES})
+source_group(src/win32_gui/src/win32/diagnostics FILES ${WIN32_DIAGNOSTICS_SOURCES})
+source_group(src/win32_gui/src/win32/drawing FILES ${WIN32_DRAWING_SOURCES})
+source_group(src/win32_gui/src/win32/forms FILES ${WIN32_FORMS_SOURCES})
+source_group(src/win32_gui/src FILES ${SOURCES})
 
 # Options
 set(CMAKE_CXX_STANDARD 17)
@@ -60,5 +81,15 @@ set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 add_definitions(-DUNICODE)
 
 # Application properties
-add_executable(${PROJECT_NAME} WIN32 ${INCLUDES} ${SOURCES})
+add_executable(${PROJECT_NAME} WIN32 
+  ${WIN32_INCLUDES} 
+  ${WIN32_DIAGNOSTICS_INCLUDES}
+  ${WIN32_DRAWING_INCLUDES}
+  ${WIN32_FORMS_INCLUDES}
+  ${WIN32_SOURCES}
+  ${WIN32_DIAGNOSTICS_SOURCES}
+  ${WIN32_DRAWING_SOURCES}
+  ${WIN32_FORMS_SOURCES}
+  ${SOURCES}
+)
 target_link_libraries(${PROJECT_NAME} PUBLIC UxTheme)
