@@ -2,12 +2,15 @@ cmake_minimum_required(VERSION 3.8)
 
 # Project
 project(win32_gui VERSION 1.0.0)
+set(INCLUDES
+  src/win32_gui/include/win32_gui.h
+  src/win32_gui/include/win32_gui
+)
 set(WIN32_INCLUDES
   src/win32_gui/include/win32/delegate.h
   src/win32_gui/include/win32/event.h
   src/win32_gui/include/win32/event_args.h
   src/win32_gui/include/win32/event_handler.h
-  src/win32_gui/include/win32/forms.h
   src/win32_gui/include/win32/string.h
 )
 set(WIN32_DIAGNOSTICS_INCLUDES
@@ -63,6 +66,7 @@ set(WIN32_FORMS_SOURCES
 set(SOURCES 
   src/win32_gui/src/Program.cpp
 )
+source_group(src/win32_gui/include FILES ${INCLUDES})
 source_group(src/win32_gui/include/win32 FILES ${WIN32_INCLUDES})
 source_group(src/win32_gui/include/win32/diagnostics FILES ${WIN32_DIAGNOSTICS_INCLUDES})
 source_group(src/win32_gui/include/win32/drawing FILES ${WIN32_DRAWING_INCLUDES})
@@ -82,14 +86,15 @@ add_definitions(-DUNICODE)
 
 # Application properties
 add_executable(${PROJECT_NAME} WIN32 
+  ${INCLUDES} 
   ${WIN32_INCLUDES} 
   ${WIN32_DIAGNOSTICS_INCLUDES}
   ${WIN32_DRAWING_INCLUDES}
   ${WIN32_FORMS_INCLUDES}
+  ${SOURCES}
   ${WIN32_SOURCES}
   ${WIN32_DIAGNOSTICS_SOURCES}
   ${WIN32_DRAWING_SOURCES}
   ${WIN32_FORMS_SOURCES}
-  ${SOURCES}
 )
 target_link_libraries(${PROJECT_NAME} PUBLIC UxTheme)

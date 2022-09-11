@@ -1,5 +1,4 @@
-#include "../include/win32/diagnostics/debug.h"
-#include "../include/win32/forms.h"
+#include "../include/win32_gui"
 
 using namespace win32;
 using namespace win32::diagnostics;
