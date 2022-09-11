@@ -40,7 +40,6 @@ namespace {
       return mouse_buttons::middle;
     return mouse_buttons::none;
   }
-
 }
 
 control::control() {
@@ -847,13 +846,18 @@ void control::wm_mouse_up(message& message) {
 
 void control::wm_mouse_wheel(message& message) {
   def_wnd_proc(message);
-  def_wnd_proc(message);
   if (message.msg == WM_MOUSEHWHEEL) on_mouse_horizontal_wheel(mouse_event_args{ to_mouse_buttons(message), get_state(state::double_click_fired) ? 2 : 1, POINT {}, static_cast<INT32>(HIWORD(message.wparam)) });
   else on_mouse_wheel(mouse_event_args{ to_mouse_buttons(message), get_state(state::double_click_fired) ? 2 : 1, POINT {}, static_cast<INT32>(HIWORD(message.wparam)) });
 }
 
 void control::wm_move(message& message) {
   def_wnd_proc(message);
+  RECT rect;
+  GetWindowRect(handle(), &rect);
+  if (data_->location.x != rect.left || data_->location.y != rect.top) {
+    data_->location = { rect.left, rect.top};
+    on_location_changed(event_args::empty);
+  }
 }
 
 void control::wm_notify(message& message) {
@@ -886,14 +890,27 @@ void control::wm_set_focus(message& message) {
 
 void control::wm_set_text(message& message) {
   def_wnd_proc(message);
+  if (data_->text != reinterpret_cast<const WCHAR*>(message.lparam)) {
+    data_->text = reinterpret_cast<const WCHAR*>(message.lparam);
+    on_text_changed(event_args::empty);
+  }
 }
 
 void control::wm_show(message& message) {
   def_wnd_proc(message);
+  set_state(state::visible, message.wparam != 0);
 }
 
 void control::wm_size(message& message) {
   def_wnd_proc(message);
+  RECT rect;
+  GetWindowRect(handle(), &rect);
+  if (size().cx != rect.right - rect.left || size().cy != rect.bottom - rect.top) {
+    data_->size = { rect.right - rect.left , rect.bottom - rect.top };
+    on_client_size_changed(event_args::empty);
+    on_size_changed(event_args::empty);
+  }
+  on_resize(event_args::empty);
 }
 
 void control::wm_sizing(message& message) {

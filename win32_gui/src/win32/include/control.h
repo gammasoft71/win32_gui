@@ -56,26 +56,6 @@ namespace win32 {
 
       double_click_fired = 0b1000000000000000000,
       double_buffered = 0b10000000000000000000,
-      /*
-      mouse_enter_pending = 0,
-      tracking_mouse_event = 0,
-      mouse_pressed = 0,
-      use_wait_cursor = 0,
-       */
-
-       /*
-       is_accessible = 0,
-       no_zorder = 0,
-       size_locked_by_os = 0,
-       causes_validation = 0,
-       own_ctl_brush = 0,
-       exception_while_painting = 0,
-       layout_sis_dirty = 0,
-       checked_host = 0,
-       hosted_in_dialog = 0,
-       validation_cancelled = 0,
-       mirrored = 0,
-       */
     };
   public:
     /// @name Constructors
@@ -153,9 +133,11 @@ namespace win32 {
     /// @name Events
     
     /// @{
-    event<control, event_handler> click;
-
+    /// @brief Occurs when the value of the win32::forms::control::back_color property changes.
+    /// @remarks This event is raised if the xtd::forms::control::back_color property is changed by either a programmatic modification or user interaction.
     event<control, event_handler> back_color_changed;
+
+    event<control, event_handler> click;
 
     event<control, event_handler> client_size_changed;
 

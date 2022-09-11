@@ -116,6 +116,14 @@ int wmain(int argc, wchar_t* argv[]) {
     debug::write_line(string_format(L"mouse_up : button=0x%08X, clicks=%d, location={x=%d, y=%d}", e.button, e.clicks, e.x, e.y));
   };
 
+  form1.location_changed += [&](control& sender, const event_args& e) {
+    debug::write_line(string_format(L"location_changed : location={x=%d, y=%d}", form1.left(), form1.top()));
+  };
+
+  form1.resize += [&](control& sender, const event_args& e) {
+    debug::write_line(string_format(L"resize : size={width=%d, height=%d}", form1.width(), form1.height()));
+  };
+
   button1.invalidate();
 
   application::run(form1);
