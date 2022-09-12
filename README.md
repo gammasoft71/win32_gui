@@ -17,7 +17,7 @@ If you want a complete project on which to base your development, please use [xt
 ## Example
 
 ```c++
-#include "../include/debug.h"
+#include <win32_gui/win32_gui>
 
 using namespace win32;
 using namespace win32::forms;
