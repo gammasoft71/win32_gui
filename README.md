@@ -20,6 +20,7 @@ If you want a complete project on which to base your development, please use [xt
 #include "../include/debug.h"
 
 using namespace win32;
+using namespace win32::forms;
 
 int wmain(int argc, wchar_t* argv[]) {
   form form1;
