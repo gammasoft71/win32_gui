@@ -74,10 +74,14 @@ namespace win32 {
       /// @endcode
       BYTE a = 0xFF;
 
+      /// @brief implict comverter to COLORREF struct.
+      /// @return A COLORREF struct that contains color.
       operator COLORREF() {
         return RGB(r, g, b);
       }
 
+      /// @brief Creates a new win32::drawing::color from stecified COLORREF struct.
+      /// @param colorref The COLORREF struct to convert into win32::drawing::color.
       static color from_colorref(COLORREF colorref) {
         return color{ GetRValue(colorref), GetGValue(colorref), GetBValue(colorref) };
       }

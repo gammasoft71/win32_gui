@@ -5,7 +5,7 @@
 namespace win32 {
   namespace drawing {
     /// @brief Each property of the win32::system_colors class is a win32::drawing::color structure that is the color of a Windows display element.
-  /// @remarks Better performance is achieved by using the properties of the win32::system_pens or win32::system_brushes classes rather than creating a new pen or brush based on a value from win32::system_colors. For example, if you wanted to get a brush for the face color of a 3-D element, use the SystemBrushes.Control property because it gets a brush that already exists, whereas calling the SolidBrush.#ctor(xtd::drawing::color) constructor with a parameter value of system_colors::Control will create a new brush.
+    /// @remarks Better performance is achieved by using the properties of the win32::system_pens or win32::system_brushes classes rather than creating a new pen or brush based on a value from win32::system_colors. For example, if you wanted to get a brush for the face color of a 3-D element, use the SystemBrushes.Control property because it gets a brush that already exists, whereas calling the SolidBrush.#ctor(xtd::drawing::color) constructor with a parameter value of system_colors::Control will create a new brush.
     class system_colors final {
     public:
       /// @name Properties

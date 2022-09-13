@@ -25,7 +25,11 @@ namespace win32 {
       /// @name Events
 
       /// @{
+      /// @brief Return true if dark mode is enabled for the application; otherwise return false.
+      /// @return True is dark mode enabled; otherwise false.
       static bool dark_mode_enabled();
+      /// @brief Return true if dark mode is enabled for the application; otherwise return false.
+      /// @return True is light mode enabled; otherwise false.
       static bool light_mode_enabled();
       /// @}
 
@@ -57,7 +61,9 @@ namespace win32 {
       /// @warning Calling this method causes the current thread to be suspended while all waiting window messages are processed. If a message causes an event to be triggered, then other areas of your application code may execute. This can cause your application to exhibit unexpected behaviors that are difficult to debug. If you perform operations or computations that take a long time, it is often preferable to perform those operations on a new thread.
       static void do_events();
 
+      /// @brief Enables dark mode for the application.
       static void enable_dark_mode();
+      /// @brief Enables light mode for the application.
       static void enable_light_mode();
 
       /// @brief Informs all message pumps that they must terminate, and then closes all application windows after the messages have been processed.

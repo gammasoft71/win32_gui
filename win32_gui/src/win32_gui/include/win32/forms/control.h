@@ -31,7 +31,7 @@ namespace win32 {
     /// @remarks The majority of the controls in the xtd::forms namespace use the underlying Windows common control as a base to build on.
     class control : public iwin32_window {
     protected:
-      /// @brief Represents the current control state.
+      /// @cond
       enum class state {
         empty = 0,
         creating = 0b1,
@@ -58,6 +58,7 @@ namespace win32 {
         double_click_fired = 0b1000000000000000000,
         double_buffered = 0b10000000000000000000,
       };
+      /// @endcond
     public:
       /// @name Constructors
 
