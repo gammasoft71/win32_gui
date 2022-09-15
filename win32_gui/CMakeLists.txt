@@ -7,6 +7,7 @@ set(INCLUDES
   src/win32_gui/include/win32_gui
 )
 set(WIN32_INCLUDES
+  src/win32_gui/include/win32/object.h
   src/win32_gui/include/win32/delegate.h
   src/win32_gui/include/win32/event.h
   src/win32_gui/include/win32/event_args.h
@@ -25,6 +26,7 @@ set(WIN32_FORMS_INCLUDES
   src/win32_gui/include/win32/forms/application.h
   src/win32_gui/include/win32/forms/bounds_specified.h
   src/win32_gui/include/win32/forms/button.h
+  src/win32_gui/include/win32/forms/component.h
   src/win32_gui/include/win32/forms/control.h
   src/win32_gui/include/win32/forms/control_styles.h
   src/win32_gui/include/win32/forms/create_params.h
@@ -43,6 +45,7 @@ set(WIN32_FORMS_INCLUDES
   src/win32_gui/include/win32/forms/mouse_buttons.h
   src/win32_gui/include/win32/forms/mouse_event_args.h
   src/win32_gui/include/win32/forms/mouse_event_handler.h
+  src/win32_gui/include/win32/forms/timer.h
   src/win32_gui/include/win32/forms/virtual_key_codes.h
   src/win32_gui/include/win32/forms/window_messages.h
 )
@@ -58,10 +61,12 @@ set(WIN32_DRAWING_SOURCES
 set(WIN32_FORMS_SOURCES
   src/win32_gui/src/win32/forms/application.cpp
   src/win32_gui/src/win32/forms/button.cpp
+  src/win32_gui/src/win32/forms/component.cpp
   src/win32_gui/src/win32/forms/control.cpp
   src/win32_gui/src/win32/forms/dark_mode.cpp
   src/win32_gui/src/win32/forms/form.cpp
   src/win32_gui/src/win32/forms/label.cpp
+  src/win32_gui/src/win32/forms/timer.cpp
 )
 set(SOURCES 
   src/win32_gui/src/Program.cpp
