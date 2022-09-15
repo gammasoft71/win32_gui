@@ -4,7 +4,7 @@ using namespace win32;
 using namespace win32::forms;
 
 timer::~timer() {
-  destroy_timer();
+  stop();
 }
 
 bool timer::enabled() const noexcept {
