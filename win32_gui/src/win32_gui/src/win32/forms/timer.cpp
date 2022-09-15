@@ -22,6 +22,7 @@ timer& timer::enabled(bool value) {
 UINT timer::interval() const noexcept {
   return data_->interval;
 }
+
 timer& timer::interval(UINT value) {
   if (data_->interval == value) return *this;
   data_->interval = value;

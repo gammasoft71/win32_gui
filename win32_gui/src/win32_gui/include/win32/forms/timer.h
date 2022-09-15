@@ -45,14 +45,15 @@ namespace win32 {
       /// @name Protected Properties
 
       /// @{
-      void on_tick(const event_args& e);
-        /// @}
+      virtual void on_tick(const event_args& e);
+
+      virtual void timer_proc(HWND hwnd, UINT msg, UINT_PTR id_event, DWORD time);
+      /// @}
 
     private:
       void create_timer();
       void destroy_timer();
       static timer* timer::from_id_event(UINT_PTR id_event) noexcept;
-      void timer_proc(HWND hwnd, UINT msg, UINT_PTR id_event, DWORD time);
       static void timer_proc_(HWND hwnd, UINT msg, UINT_PTR id_event, DWORD time);
       inline static std::map<UINT_PTR, timer*> id_events_;
       struct data {
