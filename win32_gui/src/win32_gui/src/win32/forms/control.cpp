@@ -34,12 +34,9 @@ namespace {
   }
 
   static mouse_buttons wparam_to_mouse_buttons(const message& message) {
-    if ((message.wparam & MK_LBUTTON) == MK_LBUTTON)
-      return mouse_buttons::left;
-    else if ((message.wparam & MK_RBUTTON) == MK_RBUTTON)
-      return mouse_buttons::right;
-    else if ((message.wparam & MK_MBUTTON) == MK_MBUTTON)
-      return mouse_buttons::middle;
+    if ((message.wparam & MK_LBUTTON) == MK_LBUTTON) return mouse_buttons::left;
+    else if ((message.wparam & MK_RBUTTON) == MK_RBUTTON) return mouse_buttons::right;
+    else if ((message.wparam & MK_MBUTTON) == MK_MBUTTON) return mouse_buttons::middle;
     return mouse_buttons::none;
   }
 }
