@@ -8,7 +8,7 @@
 
 namespace win32 {
   namespace forms {
-    class timer final : public component {
+    class timer : public component {
     public:
       /// @name Constructors
 
